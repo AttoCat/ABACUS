@@ -1,6 +1,5 @@
 import os
 import dotenv
-import keep_alive
 import discord
 from discord.ext import commands
 import traceback
@@ -9,7 +8,7 @@ dotenv.load_dotenv()
 
 TOKEN = os.getenv("TOKEN")
 PREFIX = os.getenv("PREFIX")
-EXTENSIONS = ["server", "check", "management"]
+EXTENSIONS = ["cogs.server", "cogs.check", "cogs.management"]
 
 
 class Hiikun(commands.Bot):
@@ -31,5 +30,4 @@ class Hiikun(commands.Bot):
 
 if __name__ == '__main__':
     bot = Hiikun(command_prefix=PREFIX)
-    keep_alive.keep_alive()
     bot.run(TOKEN)
