@@ -21,27 +21,6 @@ class management(commands.Cog):
         await member.add_roles(self.seigen)
         await ctx.message.delete()
 
-    @protect.error
-    async def protect_error(self, ctx, error):
-        if isinstance(error, commands.MissingRole):
-            embed = discord.Embed(
-                title="Error",
-                description=(
-                    f"あなたにこのコマンドを実行する権限がありません！\nYou don't have permission."),
-                color=0xff0000)
-            await ctx.message.delete()
-            await ctx.channel.send(embed=embed, delete_after=10)
-            return
-        elif isinstance(error, commands.BadArgument):
-            embed = discord.Embed(
-                title="Error",
-                description=(
-                    f"不正な引数です！\nInvalid argument passed."),
-                color=0xff0000)
-            await ctx.message.delete()
-            await ctx.channel.send(embed=embed, delete_after=10)
-            return
-
     @commands.command()
     @commands.has_role(713321552271376444)
     async def fix(self, ctx, member: discord.Member):
@@ -49,8 +28,7 @@ class management(commands.Cog):
         await member.add_roles(self.normal)
         await ctx.message.delete()
 
-    @fix.error
-    async def fix_error(self, ctx, error):
+    async def cog_command_error(self, ctx, error):
         if isinstance(error, commands.MissingRole):
             embed = discord.Embed(
                 title="Error",
