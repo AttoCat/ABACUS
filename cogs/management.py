@@ -28,6 +28,18 @@ class Management(commands.Cog):
         await member.add_roles(self.normal)
         await ctx.message.delete()
 
+    @commands.command()
+    @commands.has_role(713321552271376444)
+    async def mesdelete(self, ctx, message: discord.Message):
+        await message.delete()
+        embed = discord.Embed(
+            title="Done.",
+            description=(
+                f"削除成功。\nDeletion successful."),
+            color=0x4169e1)
+        await ctx.message.delete()
+        await ctx.channel.send(embed=embed, delete_after=10)
+
     async def cog_command_error(self, ctx, error):
         if isinstance(error, commands.MissingRole):
             embed = discord.Embed(
