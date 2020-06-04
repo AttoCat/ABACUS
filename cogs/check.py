@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 
 
-class check(commands.Cog):
+class Check(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
@@ -39,4 +39,4 @@ class check(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(check(bot))
+    bot.add_cog(Check(bot))
