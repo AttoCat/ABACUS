@@ -30,12 +30,13 @@ class Check(commands.Cog):
                 await message.delete()
                 embed = discord.Embed(
                     title="Message deleted",
-                    description=f"""暴言が含まれていたため、削除しました。
-                    {str(message.author)}:{message.content}""",
+                    description=f"暴言が含まれていたため、削除しました。",
                     color=0xff0000)
                 await message.guild.get_channel(715154878166466671).send(
-                    f"""暴言が含まれていたため、削除しました。
-                        {str(message.author)}: {message.content}""")
+                    f"""
+                    暴言が含まれていたため、削除しました。
+                    {str(message.author)}: {message.content}
+                    """)
                 if tyuui in member.roles:
                     await member.add_roles(keikoku)
                     await member.remove_roles(tyuui)
