@@ -20,7 +20,6 @@ class Check(commands.Cog):
             "ファッキュ", "ふぁっくゆー", "ファックユー", "f**k"]
         moji = message.content
         kekka = t.tokenize(moji, wakati=True)
-        print(kekka)
         for word in kekka:
             if word in out_list:
                 seigen = message.guild.get_role(714733639505543222)
