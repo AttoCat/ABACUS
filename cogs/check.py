@@ -70,14 +70,13 @@ class Check(commands.Cog):
         async with aiofiles.open('allbot.json', 'r') as bougen:
             data = await bougen.read()
         loadbougen = json.loads(data)
+        load = json.load(data)
         bougenlist = loadbougen['henkoulist']
         print(bougenlist)
         bougenlist.append(naiyou)
-        henkou = {
-            'henkoulist': bougenlist,
-        }
-        async with open('allbot.json', 'w') as f:
-            json.dump(henkou, f, indent=4)
+        load["henkoulist"] = bougenlist
+        async with aiofiles.open('allbot.json', 'w') as bougen:
+            json.dump(bougenlist, bougen, indent=4)
         embed = discord.Embed(
             title="Done.",
             description=(
