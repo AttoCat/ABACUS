@@ -40,6 +40,8 @@ class Management(commands.Cog):
         await ctx.message.delete()
         await ctx.channel.send(embed=embed, delete_after=10)
 
+    @commands.command()
+    @commands.has_role(713321552271376444)
     async def cog_command_error(self, ctx, error):
         if isinstance(error, commands.MissingRole):
             embed = discord.Embed(

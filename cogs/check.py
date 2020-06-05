@@ -12,21 +12,19 @@ class Check(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
+        bougen = open('allbot.json', 'r')
+        loadbougen = json.load(bougen)
+        bougenlist = loadbougen['henkoulist']
+        print(bougenlist)
         member = message.author
         unnei = message.guild.get_role(713321552271376444)
         if member.bot:
             return
-        # elif unnei in member.roles:
-            # return
-        out_list = [
-            "死ね", "氏ね", "ﾀﾋね", "シネ", "クズ", "消えろ", "カス", "キチガイ", "基地外",
-            "きちがい", "ふぁっきゅ", "fack you", "Fack you",
-            "ファッキュ", "ふぁっくゆー", "ファックユー", "f**k"]
         not_list = ["削り"]
         moji = message.content
         kekka = t.tokenize(moji, wakati=True)
         for word in kekka:
-            if word in out_list:
+            if word in bougenlist:
                 kensyutu = kekka.index(word)
                 if kekka[kensyutu-1] in not_list:
                     embed = discord.Embed(
@@ -66,8 +64,25 @@ class Check(commands.Cog):
 
     @commands.command()
     @commands.has_role(718082782097834104)
-    async def listadd(self, ctx, naiyiou):
-        await ctx.channel.send(naiyiou)
+    async def bougenadd(self, ctx, naiyou):
+        bougen = open('allbot.json', 'r')
+        loadbougen = json.load(bougen)
+        bougenlist = loadbougen['henkoulist']
+        print(bougenlist)
+        bougenlist.append(naiyou)
+        henkou = {
+            'henkoulist': bougenlist,
+        }
+        with open('allbot.json', 'w') as f:
+            json.dump(henkou, f, indent=4)
+        embed = discord.Embed(
+            title="Done.",
+            description=(
+                f"暴言リストに要素を追加しました。\nAdd complete."),
+            color=0x4169e1)
+        await ctx.channel.send(embed=embed, delete_after=10)
+        await ctx.delete()
+        return
 
     async def cog_command_error(self, ctx, error):
         if isinstance(error, commands.MissingRole):
