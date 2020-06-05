@@ -2,6 +2,7 @@ from janome.tokenizer import Tokenizer
 from discord.ext import commands
 import discord
 import json
+import aiofiles
 t = Tokenizer()
 
 
@@ -12,13 +13,14 @@ class Check(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        bougen = open('allbot.json', 'r')
-        loadbougen = json.load(bougen)
+        async with aiofiles.open('allbot.json', 'r') as bougen:
+            data = await bougen.read()
+        loadbougen = json.loads(data)
         bougenlist = loadbougen['henkoulist']
-        print(bougenlist)
         member = message.author
-        unnei = message.guild.get_role(713321552271376444)
         if member.bot:
+            return
+        elif message.content.startswith("ab!"):
             return
         not_list = ["削り"]
         moji = message.content
@@ -65,15 +67,16 @@ class Check(commands.Cog):
     @commands.command()
     @commands.has_role(718082782097834104)
     async def bougenadd(self, ctx, naiyou):
-        bougen = open('allbot.json', 'r')
-        loadbougen = json.load(bougen)
+        async with aiofiles.open('allbot.json', 'r') as bougen:
+            data = await bougen.read()
+        loadbougen = json.loads(data)
         bougenlist = loadbougen['henkoulist']
         print(bougenlist)
         bougenlist.append(naiyou)
         henkou = {
             'henkoulist': bougenlist,
         }
-        with open('allbot.json', 'w') as f:
+        async with open('allbot.json', 'w') as f:
             json.dump(henkou, f, indent=4)
         embed = discord.Embed(
             title="Done.",
@@ -81,7 +84,7 @@ class Check(commands.Cog):
                 f"暴言リストに要素を追加しました。\nAdd complete."),
             color=0x4169e1)
         await ctx.channel.send(embed=embed, delete_after=10)
-        await ctx.delete()
+        await ctx.message.delete()
         return
 
     async def cog_command_error(self, ctx, error):
