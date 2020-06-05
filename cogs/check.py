@@ -27,7 +27,7 @@ class Check(commands.Cog):
             return
         elif message.content.startswith("ab!"):
             return
-        not_list = ["削り"]
+        not_list = ["削り", "消し"]
         moji = message.content
         kekka = t.tokenize(moji, wakati=True)
         for word in kekka:
