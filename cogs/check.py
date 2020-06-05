@@ -12,6 +12,11 @@ class Check(commands.Cog):
         self.bot = bot
 
     @commands.Cog.listener()
+    async def on_ready(self):
+        self.guild = self.bot.get_guild(711374787892740148)
+        self.dev = self.guild.get_member(602668987112751125)
+
+    @commands.Cog.listener()
     async def on_message(self, message):
         async with aiofiles.open('allbot.json', 'r') as bougen:
             data = await bougen.read()
@@ -65,17 +70,25 @@ class Check(commands.Cog):
                 return
 
     @commands.command()
-    @commands.has_role(718082782097834104)
+    @commands.has_role(713321552271376444)
     async def bougenadd(self, ctx, naiyou):
+        if not self.dev == ctx.author:
+            embed = discord.Embed(
+                title="Error",
+                description=(
+                    f"このコマンドは開発者のみ実行できます。\nCan only be executed by the creator."),
+                color=0xff0000)
+            await ctx.channel.send(embed=embed, delete_after=10)
+            await ctx.message.delete()
+            return
         async with aiofiles.open('allbot.json', 'r') as bougen:
             data = await bougen.read()
         loadbougen = json.loads(data)
         bougenlist = loadbougen['henkoulist']
         bougenlist.append(naiyou)
         kekka = {'henkoulist': bougenlist}
-        print(kekka)
         async with aiofiles.open('allbot.json', 'w') as bougen:
-            json.dump(kekka, bougen, indent=4)
+            await bougen.write(json.dumps(kekka, indent=4))
         embed = discord.Embed(
             title="Done.",
             description=(
@@ -84,6 +97,53 @@ class Check(commands.Cog):
         await ctx.channel.send(embed=embed, delete_after=10)
         await ctx.message.delete()
         return
+
+    @commands.command()
+    @commands.has_role(713321552271376444)
+    async def bougenremove(self, ctx, naiyou):
+        if not self.dev == ctx.author:
+            embed = discord.Embed(
+                title="Error",
+                description=(
+                    f"このコマンドは開発者のみ実行できます。\nCan only be executed by the creator."),
+                color=0xff0000)
+            await ctx.channel.send(embed=embed, delete_after=10)
+            await ctx.message.delete()
+            return
+        async with aiofiles.open('allbot.json', 'r') as bougen:
+            data = await bougen.read()
+        loadbougen = json.loads(data)
+        bougenlist = loadbougen['henkoulist']
+        try:
+            bougenlist.remove(naiyou)
+        except ValueError:
+            embed = discord.Embed(
+                title="Error",
+                description=(
+                    f"不正な引数です！\nInvalid argument passed."),
+                color=0xff0000)
+            await ctx.message.delete()
+            await ctx.channel.send(embed=embed, delete_after=10)
+            return
+        kekka = {'henkoulist': bougenlist}
+        async with aiofiles.open('allbot.json', 'w') as bougen:
+            await bougen.write(json.dumps(kekka, indent=4))
+        embed = discord.Embed(
+            title="Done.",
+            description=(
+                f"暴言リストから要素を削除しました。\nDelete complete."),
+            color=0x4169e1)
+        await ctx.channel.send(embed=embed, delete_after=10)
+        await ctx.message.delete()
+        return
+
+    @commands.command()
+    async def bougenprint(self, ctx):
+        async with aiofiles.open('allbot.json', 'r') as bougen:
+            data = await bougen.read()
+        loadbougen = json.loads(data)
+        bougenlist = loadbougen['henkoulist']
+        await ctx.channel.send(bougenlist)
 
     async def cog_command_error(self, ctx, error):
         if isinstance(error, commands.MissingRole):
