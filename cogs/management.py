@@ -40,7 +40,7 @@ class Management(commands.Cog):
                 f"削除成功。\nDeletion successful."),
             color=0x4169e1)
         await ctx.message.delete()
-        await ctx.channel.send(embed=embed, delete_after=10)
+        await ctx.channel.send(embed=embed, delete_after=5)
 
     async def cog_command_error(self, ctx, error):
         if isinstance(error, commands.MissingRole):

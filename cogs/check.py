@@ -2,8 +2,10 @@ from janome.tokenizer import Tokenizer
 from discord.ext import commands
 import discord
 import json
+import csv
+import pandas as pd
 import aiofiles
-t = Tokenizer()
+t = Tokenizer("dictionary.csv", udic_type="simpledic", udic_enc="utf8")
 
 
 class Check(commands.Cog):
@@ -136,6 +138,34 @@ class Check(commands.Cog):
         await ctx.channel.send(embed=embed, delete_after=10)
         await ctx.message.delete()
         return
+
+    @commands.command()
+    async def kaiseki(self, ctx, naiyou):
+        moji = naiyou
+        kekka = t.tokenize(moji, wakati=True)
+        await ctx.channel.send(kekka)
+
+    @commands.command()
+    async def dictadd(self, ctx, naiyou, yomi, hinsi):
+        with open('dictionary.csv', 'a', encoding='utf8') as f:
+            csv_writer = csv.writer(f, lineterminator='\n')
+            csv_writer.writerow([naiyou, hinsi, yomi])
+        print("Done")
+
+    @commands.command()
+    async def dictprint(self, ctx):
+        num = 0
+        jisyo = []
+        with open("dictionary.csv", 'r', encoding="utf8") as f:
+            reader = csv.reader(f, delimiter=",")
+            for row in reader:
+                jisyo.append(str(num), row)
+                num += 1
+                print(row)
+            embed = discord.Embed(
+                title="現在のユーザー辞書",
+                description=f"{jisyo}")
+            await ctx.channel.send(embed=embed)
 
     @commands.command()
     async def bougenprint(self, ctx):
