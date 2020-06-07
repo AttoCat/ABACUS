@@ -30,7 +30,7 @@ class Management(commands.Cog):
         await member.remove_roles(self.keikoku)
         await ctx.message.delete()
 
-    @commands.command()
+    @commands.command(aliases=['md'])
     @commands.has_role(713321552271376444)
     async def mesdelete(self, ctx, message: discord.Message):
         await message.delete()
@@ -40,7 +40,7 @@ class Management(commands.Cog):
                 f"削除成功。\nDeletion successful."),
             color=0x4169e1)
         await ctx.message.delete()
-        await ctx.channel.send(embed=embed, delete_after=5)
+        await ctx.channel.send(embed=embed, delete_after=3)
 
     async def cog_command_error(self, ctx, error):
         if isinstance(error, commands.MissingRole):
