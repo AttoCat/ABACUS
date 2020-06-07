@@ -71,7 +71,7 @@ class Check(commands.Cog):
                     embed=embed)
                 return
 
-    @commands.command()
+    @commands.command(aliases=['ba'])
     @commands.has_role(713321552271376444)
     async def bougenadd(self, ctx, naiyou):
         if not self.dev == ctx.author:
@@ -100,7 +100,7 @@ class Check(commands.Cog):
         await ctx.message.delete()
         return
 
-    @commands.command()
+    @commands.command(aliases=['br'])
     @commands.has_role(713321552271376444)
     async def bougenremove(self, ctx, naiyou):
         if not self.dev == ctx.author:
@@ -139,35 +139,82 @@ class Check(commands.Cog):
         await ctx.message.delete()
         return
 
-    @commands.command()
+    @commands.command(aliases=['ks'])
     async def kaiseki(self, ctx, naiyou):
         moji = naiyou
         kekka = t.tokenize(moji, wakati=True)
         await ctx.channel.send(kekka)
 
-    @commands.command()
+    @commands.command(aliases=['da'])
+    @commands.has_role(713321552271376444)
     async def dictadd(self, ctx, naiyou, yomi, hinsi):
+        if not self.dev == ctx.author:
+            embed = discord.Embed(
+                title="Error",
+                description=(
+                    f"このコマンドは開発者のみ実行できます。\nCan only be executed by the creator."),
+                color=0xff0000)
+            await ctx.channel.send(embed=embed, delete_after=10)
+            await ctx.message.delete()
+            return
         with open('dictionary.csv', 'a', encoding='utf8') as f:
             csv_writer = csv.writer(f, lineterminator='\n')
             csv_writer.writerow([naiyou, hinsi, yomi])
-        print("Done")
+        embed = discord.Embed(
+            title="Done.",
+            description=(
+                f"ユーザー辞書に要素を追加しました。\n現在のユーザー辞書は ab!dictprint で確認できます。\nAdd complete."),
+            color=0x4169e1)
+        await ctx.channel.send(embed=embed, delete_after=10)
+        await ctx.message.delete()
+        return
 
-    @commands.command()
+    @commands.command(aliases=['dr'])
+    @commands.has_role(713321552271376444)
+    async def dictremove(self, ctx, kazu: int):
+        if not self.dev == ctx.author:
+            embed = discord.Embed(
+                title="Error",
+                description=(
+                    f"このコマンドは開発者のみ実行できます。\nCan only be executed by the creator."),
+                color=0xff0000)
+            await ctx.channel.send(embed=embed, delete_after=10)
+            await ctx.message.delete()
+            return
+        df = pd.read_csv("dictionary.csv", header=None)
+        df = df.drop(index=df.index[kazu])
+        df.to_csv('dictionary.csv', header=False, index=False)
+        embed = discord.Embed(
+            title="Done.",
+            description=(
+                f"ユーザー辞書から要素を削除しました。\n現在のユーザー辞書は ab!dictprint で確認できます。\nDelete complete."),
+            color=0x4169e1)
+        await ctx.channel.send(embed=embed, delete_after=10)
+        await ctx.message.delete()
+        return
+
+    @commands.command(aliases=['dp'])
     async def dictprint(self, ctx):
         num = 0
         jisyo = []
         with open("dictionary.csv", 'r', encoding="utf8") as f:
             reader = csv.reader(f, delimiter=",")
             for row in reader:
-                jisyo.append(str(num), row)
+                naiyou = row[0]
+                hinsi = row[1]
+                yomi = row[2]
+                jisyo.append(
+                    f"{num}" + f" {naiyou}" +
+                    f" {hinsi}" + f" {yomi}")
                 num += 1
-                print(row)
-            embed = discord.Embed(
-                title="現在のユーザー辞書",
-                description=f"{jisyo}")
-            await ctx.channel.send(embed=embed)
+        msg = "\n".join(jisyo)
+        embed = discord.Embed(
+            title="現在のユーザー辞書",
+            description=f"行  名前  品詞  読み\n{msg}")
+        await ctx.channel.send(embed=embed, delete_after=10)
+        await ctx.message.delete()
 
-    @commands.command()
+    @commands.command(aliases=['bp'])
     async def bougenprint(self, ctx):
         async with aiofiles.open('allbot.json', 'r') as bougen:
             data = await bougen.read()
@@ -181,6 +228,23 @@ class Check(commands.Cog):
                 title="Error",
                 description=(
                     f"あなたにこのコマンドを実行する権限がありません！\nYou don't have permission."),
+                color=0xff0000)
+            await ctx.message.delete()
+            await ctx.channel.send(embed=embed, delete_after=10)
+            return
+        elif isinstance(error, commands.MissingRequiredArgument):
+            embed = discord.Embed(
+                title="Error",
+                description=f"引数の数が不正です！\nInvalid input.",
+                color=0xff0000)
+            await ctx.message.delete()
+            await ctx.channel.send(embed=embed, delete_after=10)
+            return
+        else:
+            embed = discord.Embed(
+                title="Error",
+                description=(
+                    f"不明なエラーが発生しました。\n{error}"),
                 color=0xff0000)
             await ctx.message.delete()
             await ctx.channel.send(embed=embed, delete_after=10)
