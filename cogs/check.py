@@ -13,6 +13,15 @@ class Check(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    async def gentei(self, ch, ctx):
+        embed = discord.Embed(
+            title="Error",
+            description=(
+                f"このコマンドは開発者のみ実行できます。\nCan only be executed by the creator."),
+            color=0xff0000)
+        await ch.send(embed=embed, delete_after=10)
+        await ctx.delete()
+
     @commands.Cog.listener()
     async def on_ready(self):
         self.guild = self.bot.get_guild(711374787892740148)
@@ -29,25 +38,16 @@ class Check(commands.Cog):
             return
         elif message.content.startswith("ab!"):
             return
-        not_list = ["削り", "消し"]
         moji = message.content
         kekka = t.tokenize(moji, wakati=True)
         for word in kekka:
             if word in bougenlist:
                 kensyutu = kekka.index(word)
-                if kekka[kensyutu-1] in not_list:
-                    embed = discord.Embed(
-                        title="Exception handling",
-                        description=f"暴言を検出しましたが、例外処理に含まれていたためreturnしました。",
-                        color=0x4db56a)
-                    embed.add_field(
-                        name="Details", value=f"送信者: {str(message.author)}\n内容: {message.content}")
-                    await message.guild.get_channel(715154878166466671).send(embed=embed)
-                    return
-                seigen = message.guild.get_role(714733639505543222)
-                normal = message.guild.get_role(711375295172706313)
-                tyuui = message.guild.get_role(715809531829157938)
-                keikoku = message.guild.get_role(715809422148108298)
+                normal = message.guild.get_role(
+                    711375295172706313)  # ノーマルメンバー役職
+                tyuui = message.guild.get_role(715809531829157938)  # 「注意」役職
+                keikoku = message.guild.get_role(715809422148108298)  # 「警告」役職
+                seigen = message.guild.get_role(714733639505543222)  # 「制限」役職
                 await message.delete()
                 embed = discord.Embed(
                     title="Message deleted",
@@ -75,13 +75,7 @@ class Check(commands.Cog):
     @commands.has_role(713321552271376444)
     async def bougenadd(self, ctx, naiyou):
         if not self.dev == ctx.author:
-            embed = discord.Embed(
-                title="Error",
-                description=(
-                    f"このコマンドは開発者のみ実行できます。\nCan only be executed by the creator."),
-                color=0xff0000)
-            await ctx.channel.send(embed=embed, delete_after=10)
-            await ctx.message.delete()
+            await self.gentei(ctx.channel, ctx.message)
             return
         async with aiofiles.open('allbot.json', 'r') as bougen:
             data = await bougen.read()
@@ -97,20 +91,13 @@ class Check(commands.Cog):
                 f"暴言リストに要素を追加しました。\nAdd complete."),
             color=0x4169e1)
         await ctx.channel.send(embed=embed, delete_after=10)
-        await ctx.message.delete()
-        return
+        return await ctx.message.delete()
 
     @commands.command(aliases=['br'])
     @commands.has_role(713321552271376444)
     async def bougenremove(self, ctx, naiyou):
         if not self.dev == ctx.author:
-            embed = discord.Embed(
-                title="Error",
-                description=(
-                    f"このコマンドは開発者のみ実行できます。\nCan only be executed by the creator."),
-                color=0xff0000)
-            await ctx.channel.send(embed=embed, delete_after=10)
-            await ctx.message.delete()
+            await self.gentei(ctx.channel, ctx.message)
             return
         async with aiofiles.open('allbot.json', 'r') as bougen:
             data = await bougen.read()
@@ -136,8 +123,7 @@ class Check(commands.Cog):
                 f"暴言リストから要素を削除しました。\nDelete complete."),
             color=0x4169e1)
         await ctx.channel.send(embed=embed, delete_after=10)
-        await ctx.message.delete()
-        return
+        return await ctx.message.delete()
 
     @commands.command(aliases=['ks'])
     async def kaiseki(self, ctx, naiyou):
@@ -149,13 +135,7 @@ class Check(commands.Cog):
     @commands.has_role(713321552271376444)
     async def dictadd(self, ctx, naiyou, yomi, hinsi):
         if not self.dev == ctx.author:
-            embed = discord.Embed(
-                title="Error",
-                description=(
-                    f"このコマンドは開発者のみ実行できます。\nCan only be executed by the creator."),
-                color=0xff0000)
-            await ctx.channel.send(embed=embed, delete_after=10)
-            await ctx.message.delete()
+            await self.gentei(ctx.channel, ctx.message)
             return
         with open('dictionary.csv', 'a', encoding='utf8') as f:
             csv_writer = csv.writer(f, lineterminator='\n')
@@ -166,20 +146,13 @@ class Check(commands.Cog):
                 f"ユーザー辞書に要素を追加しました。\n現在のユーザー辞書は ab!dictprint で確認できます。\nAdd complete."),
             color=0x4169e1)
         await ctx.channel.send(embed=embed, delete_after=10)
-        await ctx.message.delete()
-        return
+        return await ctx.message.delete()
 
     @commands.command(aliases=['dr'])
     @commands.has_role(713321552271376444)
     async def dictremove(self, ctx, kazu: int):
         if not self.dev == ctx.author:
-            embed = discord.Embed(
-                title="Error",
-                description=(
-                    f"このコマンドは開発者のみ実行できます。\nCan only be executed by the creator."),
-                color=0xff0000)
-            await ctx.channel.send(embed=embed, delete_after=10)
-            await ctx.message.delete()
+            await self.gentei(ctx.channel, ctx.message)
             return
         df = pd.read_csv("dictionary.csv", header=None)
         df = df.drop(index=df.index[kazu])
@@ -190,8 +163,7 @@ class Check(commands.Cog):
                 f"ユーザー辞書から要素を削除しました。\n現在のユーザー辞書は ab!dictprint で確認できます。\nDelete complete."),
             color=0x4169e1)
         await ctx.channel.send(embed=embed, delete_after=10)
-        await ctx.message.delete()
-        return
+        return await ctx.message.delete()
 
     @commands.command(aliases=['dp'])
     async def dictprint(self, ctx):
@@ -212,7 +184,7 @@ class Check(commands.Cog):
             title="現在のユーザー辞書",
             description=f"行  名前  品詞  読み\n{msg}")
         await ctx.channel.send(embed=embed, delete_after=10)
-        await ctx.message.delete()
+        return await ctx.message.delete()
 
     @commands.command(aliases=['bp'])
     async def bougenprint(self, ctx):
@@ -220,7 +192,7 @@ class Check(commands.Cog):
             data = await bougen.read()
         loadbougen = json.loads(data)
         bougenlist = loadbougen['henkoulist']
-        await ctx.channel.send(bougenlist)
+        return await ctx.channel.send(bougenlist)
 
     async def cog_command_error(self, ctx, error):
         if isinstance(error, commands.MissingRole):
@@ -244,7 +216,7 @@ class Check(commands.Cog):
             embed = discord.Embed(
                 title="Error",
                 description=(
-                    f"不明なエラーが発生しました。\n{error}"),
+                    f"不明なエラーが発生しました。\nエラー内容:{error}"),
                 color=0xff0000)
             await ctx.message.delete()
             await ctx.channel.send(embed=embed, delete_after=10)
