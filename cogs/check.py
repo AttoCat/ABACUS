@@ -5,7 +5,6 @@ import json
 import csv
 import pandas as pd
 import aiofiles
-t = Tokenizer("dictionary.csv", udic_type="simpledic", udic_enc="utf8")
 
 
 class Check(commands.Cog):
@@ -29,6 +28,7 @@ class Check(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
+        t = Tokenizer("dictionary.csv", udic_type="simpledic", udic_enc="utf8")
         async with aiofiles.open('allbot.json', 'r') as bougen:
             data = await bougen.read()
         loadbougen = json.loads(data)
@@ -127,6 +127,7 @@ class Check(commands.Cog):
 
     @commands.command(aliases=['ks'])
     async def kaiseki(self, ctx, naiyou):
+        t = Tokenizer("dictionary.csv", udic_type="simpledic", udic_enc="utf8")
         moji = naiyou
         kekka = t.tokenize(moji, wakati=True)
         await ctx.channel.send(kekka)
