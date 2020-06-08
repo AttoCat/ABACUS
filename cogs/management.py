@@ -28,10 +28,8 @@ class Management(commands.Cog):
     async def fix(self, ctx, member: discord.Member):
         if self.tyuui in member.roles:
             await member.remove_roles(self.tyuui)
-            return
         elif self.keikoku in member.roles:
             await member.remove_roles(self.keikoku)
-            return
         else:
             await member.remove_roles(self.seigen)
             await member.add_roles(self.normal)
