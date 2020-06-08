@@ -12,6 +12,7 @@ class Event(commands.Cog):
         self.guild = self.bot.get_guild(711374787892740148)
         self.dev = self.guild.get_member(602668987112751125)
         self.rank = self.guild.get_channel(713389883569340436)
+        self.hiibot = self.guild.get_member(713685021277552640)
 
     @commands.command()
     async def devdm(self, ctx, naiyou):
@@ -40,6 +41,8 @@ class Event(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
+        if self.hiibot.status == discord.Status.online:
+            return
         ch = self.guild.get_channel(711375652107976847)
         rule = self.guild.get_channel(711379195992997949)
         yaku = self.guild.get_channel(712410294496002090)
