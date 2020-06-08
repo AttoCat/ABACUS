@@ -29,7 +29,7 @@ class Check(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message):
         t = Tokenizer("dictionary.csv", udic_type="simpledic", udic_enc="utf8")
-        async with aiofiles.open('allbot.json', 'r') as bougen:
+        async with aiofiles.open('allbot.json', 'r') as bougen:  # jsonファイルから暴言リストを読み込み
             data = await bougen.read()
         loadbougen = json.loads(data)
         bougenlist = loadbougen['henkoulist']
@@ -58,14 +58,14 @@ class Check(commands.Cog):
                     description=f"送信者: {str(message.author)}\n内容:{message.content}",
                     color=0xff0000)
                 await message.guild.get_channel(715154878166466671).send(embed=kensyutu)
-                if tyuui in member.roles:
+                if tyuui in member.roles:  # 注意がある場合は警告に変更
                     await member.add_roles(keikoku)
                     await member.remove_roles(tyuui)
-                elif keikoku in member.roles:
+                elif keikoku in member.roles:  # 警告がある場合は制限付きに
                     await member.remove_roles(normal)
                     await member.add_roles(seigen)
                     await member.remove_roles(keikoku)
-                else:
+                else:  # 何も持っていなければ注意を
                     await member.add_roles(tyuui)
                 await message.channel.send(
                     embed=embed)
@@ -77,13 +77,13 @@ class Check(commands.Cog):
         if not self.dev == ctx.author:
             await self.gentei(ctx.channel, ctx.message)
             return
-        async with aiofiles.open('allbot.json', 'r') as bougen:
+        async with aiofiles.open('allbot.json', 'r') as bougen:  # 暴言リストを読み込み
             data = await bougen.read()
         loadbougen = json.loads(data)
         bougenlist = loadbougen['henkoulist']
-        bougenlist.append(naiyou)
+        bougenlist.append(naiyou)  # 読み込んだリストに内容を追加
         kekka = {'henkoulist': bougenlist}
-        async with aiofiles.open('allbot.json', 'w') as bougen:
+        async with aiofiles.open('allbot.json', 'w') as bougen:  # 追加後のリストに内容を置き換え
             await bougen.write(json.dumps(kekka, indent=4))
         embed = discord.Embed(
             title="Done.",
@@ -193,7 +193,7 @@ class Check(commands.Cog):
             data = await bougen.read()
         loadbougen = json.loads(data)
         bougenlist = loadbougen['henkoulist']
-        return await ctx.channel.send(bougenlist)
+        return await ctx.send(bougenlist)
 
     async def cog_command_error(self, ctx, error):
         if isinstance(error, commands.MissingRole):
