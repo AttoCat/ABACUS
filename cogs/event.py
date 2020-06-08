@@ -38,6 +38,19 @@ class Event(commands.Cog):
             elif not message.content.startswith("!rank"):
                 await message.delete()
 
+    @commands.Cog.listener()
+    async def on_member_join(self, member):
+        ch = self.guild.get_channel(711375652107976847)
+        rule = self.guild.get_channel(711379195992997949)
+        yaku = self.guild.get_channel(712410294496002090)
+        naiyou = (
+            f"{member.mention}さんようこそBOTのすべてへ！\nまずは{rule.mention}でルールを確認し、同意する場合は{yaku.mention}でその他の役職をもらいましょう！")
+        embed = discord.Embed(
+            title=(f"{member}さんが参加しました！"),
+            description=naiyou,
+            color=0x3aee67)
+        await ch.send(embed=embed)
+
 
 def setup(bot):
     bot.add_cog(Event(bot))
