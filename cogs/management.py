@@ -14,6 +14,7 @@ class Management(commands.Cog):
         self.normal = self.guild.get_role(711375295172706313)
         self.unei = self.guild.get_role(713321552271376444)
         self.keikoku = self.guild.get_role(715809422148108298)
+        self.tyuui = self.guild.get_role(715809531829157938)
 
     @commands.command()
     @commands.has_role(713321552271376444)
@@ -25,9 +26,15 @@ class Management(commands.Cog):
     @commands.command()
     @commands.has_role(713321552271376444)
     async def fix(self, ctx, member: discord.Member):
-        await member.remove_roles(self.seigen)
-        await member.add_roles(self.normal)
-        await member.remove_roles(self.keikoku)
+        if self.tyuui in member.roles:
+            await member.remove_roles(self.tyuui)
+            return
+        elif self.keikoku in member.roles:
+            await member.remove_roles(self.keikoku)
+            return
+        else:
+            await member.remove_roles(self.seigen)
+            await member.add_roles(self.normal)
         await ctx.message.delete()
 
     @commands.command(aliases=['md'])
