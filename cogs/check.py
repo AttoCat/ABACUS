@@ -63,7 +63,6 @@ class Check(commands.Cog):
                 return
 
     @commands.command(aliases=['ba'])
-    @commands.has_role(713321552271376444)
     @commands.is_owner()
     async def bougenadd(self, ctx, naiyou):
         async with aiofiles.open('allbot.json', 'r') as bougen:  # 暴言リストを読み込み
@@ -83,7 +82,6 @@ class Check(commands.Cog):
         return await ctx.message.delete()
 
     @commands.command(aliases=['br'])
-    @commands.has_role(713321552271376444)
     @commands.is_owner()
     async def bougenremove(self, ctx, naiyou):
         async with aiofiles.open('allbot.json', 'r') as bougen:
@@ -120,7 +118,6 @@ class Check(commands.Cog):
         await ctx.channel.send(kekka)
 
     @commands.command(aliases=['da'])
-    @commands.has_role(713321552271376444)
     @commands.is_owner()
     async def dictadd(self, ctx, naiyou, yomi, hinsi):
         with open('dictionary.csv', 'a', encoding='utf8') as f:
@@ -135,7 +132,6 @@ class Check(commands.Cog):
         return await ctx.message.delete()
 
     @commands.command(aliases=['dr'])
-    @commands.has_role(713321552271376444)
     @commands.is_owner()
     async def dictremove(self, ctx, kazu: int):
         df = pd.read_csv("dictionary.csv", header=None)
