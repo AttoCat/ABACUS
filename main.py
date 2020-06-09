@@ -15,8 +15,6 @@ class Hiikun(commands.Bot):
     def __init__(self, command_prefix):
         super().__init__(command_prefix)
 
-        self.remove_command("help")
-
         for cog in EXTENSIONS:
             try:
                 self.load_extension(cog)
