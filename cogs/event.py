@@ -54,6 +54,12 @@ class Event(commands.Cog):
             color=0x3aee67)
         await ch.send(embed=embed)
 
+    @commands.command()
+    @commands.is_owner()
+    async def say(self, ctx, naiyou: str):
+        await ctx.message.delete()
+        await ctx.send(naiyou)
+
 
 def setup(bot):
     bot.add_cog(Event(bot))
