@@ -12,15 +12,6 @@ class Check(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    async def gentei(self, ch, ctx):
-        embed = discord.Embed(
-            title="Error",
-            description=(
-                f"このコマンドは開発者のみ実行できます。\nCan only be executed by the creator."),
-            color=0xff0000)
-        await ch.send(embed=embed, delete_after=10)
-        await ctx.delete()
-
     @commands.Cog.listener()
     async def on_ready(self):
         self.guild = self.bot.get_guild(711374787892740148)
@@ -73,10 +64,8 @@ class Check(commands.Cog):
 
     @commands.command(aliases=['ba'])
     @commands.has_role(713321552271376444)
+    @commands.is_owner()
     async def bougenadd(self, ctx, naiyou):
-        if not self.dev == ctx.author:
-            await self.gentei(ctx.channel, ctx.message)
-            return
         async with aiofiles.open('allbot.json', 'r') as bougen:  # 暴言リストを読み込み
             data = await bougen.read()
         loadbougen = json.loads(data)
@@ -95,10 +84,8 @@ class Check(commands.Cog):
 
     @commands.command(aliases=['br'])
     @commands.has_role(713321552271376444)
+    @commands.is_owner()
     async def bougenremove(self, ctx, naiyou):
-        if not self.dev == ctx.author:
-            await self.gentei(ctx.channel, ctx.message)
-            return
         async with aiofiles.open('allbot.json', 'r') as bougen:
             data = await bougen.read()
         loadbougen = json.loads(data)
@@ -134,10 +121,8 @@ class Check(commands.Cog):
 
     @commands.command(aliases=['da'])
     @commands.has_role(713321552271376444)
+    @commands.is_owner()
     async def dictadd(self, ctx, naiyou, yomi, hinsi):
-        if not self.dev == ctx.author:
-            await self.gentei(ctx.channel, ctx.message)
-            return
         with open('dictionary.csv', 'a', encoding='utf8') as f:
             csv_writer = csv.writer(f, lineterminator='\n')
             csv_writer.writerow([naiyou, hinsi, yomi])
@@ -151,10 +136,8 @@ class Check(commands.Cog):
 
     @commands.command(aliases=['dr'])
     @commands.has_role(713321552271376444)
+    @commands.is_owner()
     async def dictremove(self, ctx, kazu: int):
-        if not self.dev == ctx.author:
-            await self.gentei(ctx.channel, ctx.message)
-            return
         df = pd.read_csv("dictionary.csv", header=None)
         df = df.drop(index=df.index[kazu])
         df.to_csv('dictionary.csv', header=False, index=False)
@@ -209,6 +192,15 @@ class Check(commands.Cog):
             embed = discord.Embed(
                 title="Error",
                 description=f"引数の数が不正です！\nInvalid input.",
+                color=0xff0000)
+            await ctx.message.delete()
+            await ctx.channel.send(embed=embed, delete_after=10)
+            return
+        elif isinstance(error, commands.NotOwner):
+            embed = discord.Embed(
+                title="Error",
+                description=(
+                    f"このコマンドは開発者のみ実行できます。\nCan only be executed by the creator."),
                 color=0xff0000)
             await ctx.message.delete()
             await ctx.channel.send(embed=embed, delete_after=10)
