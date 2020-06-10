@@ -15,7 +15,7 @@ class Event(commands.Cog):
         self.hiibot = self.guild.get_member(713685021277552640)
 
     @commands.command()
-    async def devdm(self, ctx, naiyou):
+    async def devdm(self, ctx, *, naiyou):
         embed = discord.Embed(
             title="メッセージが届きました！",
             description=(
@@ -56,9 +56,20 @@ class Event(commands.Cog):
 
     @commands.command()
     @commands.is_owner()
-    async def say(self, ctx, naiyou: str):
+    async def say(self, ctx, *, naiyou: str):
         await ctx.message.delete()
         await ctx.send(naiyou)
+
+    async def cog_command_error(self, ctx, error):
+        if isinstance(error, commands.NotOwner):
+            embed = discord.Embed(
+                title="Error",
+                description=(
+                    f"あなたにこのコマンドを実行する権限がありません！\nYou don't have permission."),
+                color=0xff0000)
+            await ctx.message.delete()
+            await ctx.channel.send(embed=embed, delete_after=10)
+            return
 
 
 def setup(bot):
