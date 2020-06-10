@@ -33,14 +33,10 @@ class Play(commands.Cog):
         guild = self.bot.get_guild(711374787892740148)
         member = discord.utils.get(guild.members, discriminator=dis)
         if member == None:
-            embed = discord.Embed(
-                title="Error",
-                description=f"不正な引数です！\nInvalid argument passed.",
-                color=0xff0000)
+            raise commands.BadArgument()
+        else:
             await ctx.message.delete()
-            return await ctx.send(embed=embed)
-        await ctx.message.delete()
-        await ctx.send(str(member))
+            await ctx.send(str(member))
 
     async def cog_command_error(self, ctx, error):
         if isinstance(error, commands.NotOwner):
@@ -48,6 +44,24 @@ class Play(commands.Cog):
                 title="Error",
                 description=(
                     f"あなたにこのコマンドを実行する権限がありません！\nYou don't have permission."),
+                color=0xff0000)
+            await ctx.message.delete()
+            await ctx.channel.send(embed=embed, delete_after=10)
+            return
+        elif isinstance(error, commands.BadArgument):
+            embed = discord.Embed(
+                title="Error",
+                description=(
+                    f"不正な引数です！\nInvalid argument passed."),
+                color=0xff0000)
+            await ctx.message.delete()
+            await ctx.channel.send(embed=embed, delete_after=10)
+            return
+        else:
+            embed = discord.Embed(
+                title="Error",
+                description=(
+                    f"不明なエラーが発生しました。\nエラー内容:\n{error}"),
                 color=0xff0000)
             await ctx.message.delete()
             await ctx.channel.send(embed=embed, delete_after=10)
