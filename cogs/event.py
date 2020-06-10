@@ -13,6 +13,7 @@ class Event(commands.Cog):
         self.dev = self.guild.get_member(602668987112751125)
         self.rank = self.guild.get_channel(713389883569340436)
         self.hiibot = self.guild.get_member(713685021277552640)
+        self.log = self.guild.get_channel(715154878166466671)
 
     @commands.command()
     async def devdm(self, ctx, *, naiyou):
