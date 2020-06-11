@@ -8,7 +8,9 @@ dotenv.load_dotenv()
 
 TOKEN = os.getenv("TOKEN")
 PREFIX = os.getenv("PREFIX")
-EXTENSIONS = ["cogs.check", "cogs.management", "cogs.event", "cogs.play"]
+EXTENSIONS = [
+    "cogs.check", "cogs.management",
+    "cogs.event", "cogs.play", "cogs.special"]
 
 
 class Hiikun(commands.Bot):
