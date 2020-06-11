@@ -33,8 +33,8 @@ class Event(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        mee6 = self.guild.get_member(159985870458322944)
         if message.channel == self.rank:
+            mee6 = self.guild.get_member(159985870458322944)
             if message.author == mee6:
                 return
             elif not message.content.startswith("!rank"):
