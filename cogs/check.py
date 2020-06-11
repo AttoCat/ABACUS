@@ -111,6 +111,7 @@ class Check(commands.Cog):
         return await ctx.message.delete()
 
     @commands.command(aliases=['ks'])
+    @commands.has_role(713321552271376444)
     async def kaiseki(self, ctx, naiyou):
         t = Tokenizer("dictionary.csv", udic_type="simpledic", udic_enc="utf8")
         moji = naiyou
