@@ -55,10 +55,15 @@ class Management(commands.Cog):
         if message.author.bot:
             return
         members = message.guild.members
-        list = message.mentions
-        if not message.channel == self.userch:
+        if message.channel != self.userch:
             return
-        elif len(list) >= 2:
+        list = []
+        try:
+            get = self.guild.get_member(int(message.content))
+            list.append(get)
+        except ValueError:
+            list = message.mentions
+        if len(list) >= 2:
             await message.channel.send("複数のメンションは使用できません！")
             await message.delete()
             asyncio.sleep(10)
@@ -80,7 +85,7 @@ class Management(commands.Cog):
             await message.channel.purge(limit=None)
             return
         for member in members:
-            if member in message.mentions:
+            if member in list:
                 bangou = []
                 emoji = [
                     ":regional_indicator_a:",
