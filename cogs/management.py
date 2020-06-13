@@ -1,4 +1,5 @@
 import asyncio
+import typing
 import discord
 from discord.ext import commands
 
@@ -63,6 +64,7 @@ class Management(commands.Cog):
             list.append(get)
         except ValueError:
             list = message.mentions
+            print(list)
         if len(list) >= 2:
             await message.channel.send("複数のメンションは使用できません！")
             await message.delete()
@@ -136,10 +138,13 @@ class Management(commands.Cog):
                         await member.add_roles(self.keikoku)
                         return
                     elif sousa == 5:
-                        await member.remove_roles(self.tyuui)
-                        await member.remove_roles(self.keikoku)
-                        await member.remove_roles(self.seigen)
-                        return
+                        if self.tyuui in member.roles:
+                            await member.remove_roles(self.tyuui)
+                        elif self.keikoku in member.roles:
+                            await member.remove_roles(self.keikoku)
+                        else:
+                            await member.remove_roles(self.seigen)
+                            await member.add_roles(self.normal)
 
                 def check(reaction, user):
                     msg = str(reaction.emoji)
@@ -220,6 +225,50 @@ class Management(commands.Cog):
                             await message.channel.purge(limit=None)
                         break
                     break
+
+    @commands.command()
+    @commands.has_role(713321552271376444)
+    async def give(self, ctx, user: typing.Union[discord.Member, str], roles: int):
+        if isinstance(user, str):
+            try:
+                member = discord.utils.get(
+                    self.guild.members, discriminator=user)
+                user = self.guild.get_member(member.id)
+                if user == None:
+                    raise commands.BadArgument()
+            except ValueError:
+                raise commands.BadArgument()
+        role = self.guild.get_role(roles)
+        await user.add_roles(role)
+        embed = discord.Embed(
+            title="Done.",
+            description=(
+                f"{user}に{role}を付与しました。\nGrant complete."),
+            color=0x4169e1)
+        await ctx.send(embed=embed)
+        await ctx.message.delete()
+
+    @commands.command()
+    @commands.has_role(713321552271376444)
+    async def remove(self, ctx, user: typing.Union[discord.Member, str], roles: int):
+        if isinstance(user, str):
+            try:
+                member = discord.utils.get(
+                    self.guild.members, discriminator=user)
+                user = self.guild.get_member(member.id)
+                if user == None:
+                    raise commands.BadArgument()
+            except ValueError:
+                raise commands.BadArgument()
+        role = self.guild.get_role(roles)
+        await user.remove_roles(role)
+        embed = discord.Embed(
+            title="Done.",
+            description=(
+                f"{user}から{role}を剥奪しました。\nDeprivation complete."),
+            color=0x4169e1)
+        await ctx.send(embed=embed)
+        await ctx.message.delete()
 
     async def cog_command_error(self, ctx, error):
         if isinstance(error, commands.MissingRole):
