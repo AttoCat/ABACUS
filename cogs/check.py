@@ -16,6 +16,7 @@ class Check(commands.Cog):
     async def on_ready(self):
         self.guild = self.bot.get_guild(711374787892740148)
         self.dev = self.guild.get_member(602668987112751125)
+        self.nsfw = self.guild.get_channel(713050662774112306)
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -33,6 +34,8 @@ class Check(commands.Cog):
         kekka = t.tokenize(moji, wakati=True)
         for word in kekka:
             if word in bougenlist:
+                if message.channel == self.nsfw:
+                    return
                 kensyutu = kekka.index(word)
                 normal = message.guild.get_role(
                     711375295172706313)  # ノーマルメンバー役職
@@ -42,7 +45,7 @@ class Check(commands.Cog):
                 await message.delete()
                 embed = discord.Embed(
                     title="Message deleted",
-                    description=f"暴言が含まれていたため、削除しました。",
+                    description=f"NGワードが含まれていたため、削除しました。",
                     color=0xff0000)
                 kensyutu = discord.Embed(
                     title="Manegement_001",
@@ -147,6 +150,7 @@ class Check(commands.Cog):
         return await ctx.message.delete()
 
     @commands.command(aliases=['dp'])
+    @commands.has_role(713321552271376444)
     async def dictprint(self, ctx):
         num = 0
         jisyo = []
@@ -168,6 +172,7 @@ class Check(commands.Cog):
         return await ctx.message.delete()
 
     @commands.command(aliases=['bp'])
+    @commands.has_role(713321552271376444)
     async def bougenprint(self, ctx):
         async with aiofiles.open('allbot.json', 'r') as bougen:
             data = await bougen.read()
