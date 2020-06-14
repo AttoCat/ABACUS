@@ -63,6 +63,12 @@ class Play(commands.Cog):
                 content3 = random.choice(list)
             tousen = str(round(1/kakuritu*100, 1))
             ooatari = str(round(float(tousen)/7, 1))
+            if float(tousen) == 0.0:
+                tousen = "限りなく低い"
+                ooatari = "限りなく低い"
+            else:
+                tousen = tousen + "%"
+                ooatari = ooatari + "%"
         if content1 == content2 == content3:
             kekka = "あたり！"
             if content1 == ":seven:":
@@ -72,7 +78,7 @@ class Play(commands.Cog):
         embed = discord.Embed(
             title="スロット結果",
             description=(
-                f"{content1}|{content2}|{content3}\n{kekka}\n当選確率 = {tousen}%\n大当たり率 = {ooatari}%"),
+                f"{content1}|{content2}|{content3}\n{kekka}\n当選確率 = {tousen}\n大当たり率 = {ooatari}"),
             color=0x3aee67)
         await ctx.send(embed=embed)
 
