@@ -38,6 +38,44 @@ class Play(commands.Cog):
             await ctx.message.delete()
             await ctx.send(str(member))
 
+    @commands.command()
+    async def slot(self, ctx, kakuritu: int = 0):
+        list = [":alien:", ":robot:", ":smiley_cat:", ":desktop:",
+                ":full_moon_with_face:", ":crossed_swords:", ":seven:"]
+        number = []
+        if kakuritu == 0:
+            content1 = random.choice(list)
+            content2 = random.choice(list)
+            content3 = random.choice(list)
+            tousen = str(0.29)
+            ooatari = str(0.041)
+        else:
+            for num in range(kakuritu):
+                number.append(num)
+            k = random.choice(number)
+            if k == 0:
+                content1 = random.choice(list)
+                content2 = content1
+                content3 = content2
+            else:
+                content1 = random.choice(list)
+                content2 = random.choice(list)
+                content3 = random.choice(list)
+            tousen = str(round(1/kakuritu*100, 1))
+            ooatari = str(round(float(tousen)/7, 1))
+        if content1 == content2 == content3:
+            kekka = "あたり！"
+            if content1 == ":seven:":
+                kekka = "大当たり！"
+        else:
+            kekka = "はずれ！"
+        embed = discord.Embed(
+            title="スロット結果",
+            description=(
+                f"{content1}|{content2}|{content3}\n{kekka}\n当選確率 = {tousen}%\n大当たり率 = {ooatari}%"),
+            color=0x3aee67)
+        await ctx.send(embed=embed)
+
     async def cog_command_error(self, ctx, error):
         if isinstance(error, commands.NotOwner):
             embed = discord.Embed(
