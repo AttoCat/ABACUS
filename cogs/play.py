@@ -49,6 +49,15 @@ class Play(commands.Cog):
             content3 = random.choice(list)
             tousen = str(0.29)
             ooatari = str(0.041)
+        elif kakuritu > 10000:
+            embed = discord.Embed(
+                title="Error",
+                description=(
+                    f"引数が大きすぎます！最大数は10000です！\nArgument is too large."),
+                color=0xff0000)
+            await ctx.message.delete()
+            await ctx.channel.send(embed=embed, delete_after=10)
+            return
         else:
             for num in range(kakuritu):
                 number.append(num)
@@ -80,6 +89,7 @@ class Play(commands.Cog):
             description=(
                 f"{content1}|{content2}|{content3}\n{kekka}\n当選確率 = {tousen}\n大当たり率 = {ooatari}"),
             color=0x3aee67)
+        embed.set_footer(text=f"実行者：{ctx.author}")
         await ctx.send(embed=embed)
 
     async def cog_command_error(self, ctx, error):
