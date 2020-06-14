@@ -47,8 +47,8 @@ class Play(commands.Cog):
             content1 = random.choice(list)
             content2 = random.choice(list)
             content3 = random.choice(list)
-            tousen = str(0.29)
-            ooatari = str(0.041)
+            tousen = "0.29%"
+            ooatari = "0.041%"
         elif kakuritu > 10000:
             embed = discord.Embed(
                 title="Error",
