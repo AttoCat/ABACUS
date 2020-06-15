@@ -58,36 +58,35 @@ class Management(commands.Cog):
         members = message.guild.members
         if message.channel != self.userch:
             return
-        list = []
+        getlist = []
         try:
             get = self.guild.get_member(int(message.content))
-            list.append(get)
+            getlist.append(get)
         except ValueError:
-            list = message.mentions
-            print(list)
-        if len(list) >= 2:
+            getlist = message.mentions
+        if len(getlist) >= 2:
             await message.channel.send("複数のメンションは使用できません！")
             await message.delete()
             asyncio.sleep(10)
             await message.channel.purge(limit=None)
             return
-        elif len(list) == 0:
+        elif len(getlist) == 0:
             await message.delete()
             return
-        elif list[0] == message.author:
+        elif getlist[0] == message.author:
             await message.channel.send("自身に対して変更を加えることは出来ません！")
             await message.delete()
             asyncio.sleep(10)
             await message.channel.purge(limit=None)
             return
-        elif self.unei in list[0].roles:
+        elif self.unei in getlist[0].roles:
             await message.channel.send("運営またはABACUSに対して変更を加えることは出来ません！")
             await message.delete()
             asyncio.sleep(10)
             await message.channel.purge(limit=None)
             return
         for member in members:
-            if member in list:
+            if member in getlist:
                 bangou = []
                 emoji = [
                     ":regional_indicator_a:",
