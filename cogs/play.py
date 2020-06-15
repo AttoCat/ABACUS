@@ -40,13 +40,13 @@ class Play(commands.Cog):
 
     @commands.command()
     async def slot(self, ctx, kakuritu: int = 0):
-        list = [":alien:", ":robot:", ":smiley_cat:", ":desktop:",
-                ":full_moon_with_face:", ":crossed_swords:", ":seven:"]
+        slotlist = [":alien:", ":robot:", ":smiley_cat:", ":desktop:",
+                    ":full_moon_with_face:", ":crossed_swords:", ":seven:"]
         number = []
         if kakuritu == 0:
-            content1 = random.choice(list)
-            content2 = random.choice(list)
-            content3 = random.choice(list)
+            content1 = random.choice(slotlist)
+            content2 = random.choice(slotlist)
+            content3 = random.choice(slotlist)
             tousen = "0.29%"
             ooatari = "0.041%"
         elif kakuritu > 10000:
@@ -63,13 +63,13 @@ class Play(commands.Cog):
                 number.append(num)
             k = random.choice(number)
             if k == 0:
-                content1 = random.choice(list)
+                content1 = random.choice(slotlist)
                 content2 = content1
                 content3 = content2
             else:
-                content1 = random.choice(list)
-                content2 = random.choice(list)
-                content3 = random.choice(list)
+                content1 = random.choice(slotlist)
+                content2 = random.choice(slotlist)
+                content3 = random.choice(slotlist)
             tousen = str(round(1/kakuritu*100, 1))
             ooatari = str(round(float(tousen)/7, 1))
             if float(tousen) == 0.0:
@@ -91,6 +91,30 @@ class Play(commands.Cog):
             color=0x3aee67)
         embed.set_footer(text=f"実行者：{ctx.author}")
         await ctx.send(embed=embed)
+
+    @commands.command()
+    async def touhyou(self, ctx, *args):
+        emoji = 0x0001f1e6  # 絵文字定数（A）
+        naiyou = []
+        if len(args) == 0:
+            raise commands.BadArgument
+            return
+        num = 0
+        for content in args:
+            tuika = chr(emoji + num) + ":" + str(content)
+            num += 1
+            naiyou.append(tuika)
+        msg = "\n".join(naiyou)
+        embed = discord.Embed(
+            title="投票",
+            description=(
+                f"投票をします！\n{msg}"),
+            color=0x3aee67)
+        msg = await ctx.send(embed=embed)
+        await ctx.message.delete()
+        for num in range(len(args)):
+            tuika = chr((emoji + num))
+            await msg.add_reaction(tuika)
 
     async def cog_command_error(self, ctx, error):
         if isinstance(error, commands.NotOwner):
