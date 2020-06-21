@@ -178,7 +178,17 @@ class Check(commands.Cog):
             data = await bougen.read()
         loadbougen = json.loads(data)
         bougenlist = loadbougen['henkoulist']
-        return await ctx.send(bougenlist)
+        kekka = []
+        num = 1
+        for word in bougenlist:
+            kekka.append(f"{str(num)}：{word}")
+            num += 1
+        msg = "\n".join(kekka)
+        embed = discord.Embed(
+            title="現在のNGワードリスト",
+            description=f"{msg}"
+        )
+        await ctx.send(embed=embed, delete_after=10)
 
     async def cog_command_error(self, ctx, error):
         if isinstance(error, commands.MissingRole):
