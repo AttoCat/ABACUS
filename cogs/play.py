@@ -1,6 +1,8 @@
 import discord
 from discord.ext import commands
 import random
+import psutil
+from decimal import Decimal, ROUND_HALF_UP, ROUND_HALF_EVEN
 
 
 class Play(commands.Cog):
@@ -114,6 +116,26 @@ class Play(commands.Cog):
         for num in range(len(args)):
             tuika = chr((emoji + num))
             await msg.add_reaction(tuika)
+
+    @commands.command()
+    async def abacus(self, ctx):
+        total = psutil.virtual_memory().total/1000/1000/1000
+        use = psutil.virtual_memory().used/1000/1000/1000
+        kekka = round(use/total*100, 0)
+        content = int(kekka/5)
+        cpu = psutil.cpu_percent(interval=1)
+        content2 = int(cpu/5)
+        memorymeter = ("|" * content) + (" " * (20-content))
+        cpumeter = ("|" * content2) + (" " * (20-content2))
+        embed = discord.Embed(
+            title="使用状況",
+            description=(
+                f"Memory...{round(use, 1)}GB/{round(total, 1)}GB {kekka}%\n"
+                f"`[{memorymeter}`]\n"
+                f"CPU...{cpu}%\n"
+                f"`[{cpumeter}]`"),
+            color=0xff0000)
+        await ctx.send(embed=embed)
 
     async def cog_command_error(self, ctx, error):
         if isinstance(error, commands.NotOwner):
