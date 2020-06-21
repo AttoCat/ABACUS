@@ -135,7 +135,7 @@ class Play(commands.Cog):
             title="使用状況",
             description=(
                 f"Memory...{round(use, 1)}GB/{round(total, 1)}GB {kekka}%\n"
-                f"`[{memorymeter}`]\n"
+                f"`[{memorymeter}]`\n"
                 f"CPU...{cpu}%\n"
                 f"`[{cpumeter}]`"),
             color=0xff0000)
