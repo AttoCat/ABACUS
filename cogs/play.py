@@ -1,8 +1,8 @@
-import discord
-from discord.ext import commands
 import random
 import psutil
 from decimal import Decimal, ROUND_HALF_UP, ROUND_HALF_EVEN
+import discord
+from discord.ext import commands
 
 
 class Play(commands.Cog):
