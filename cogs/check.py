@@ -51,7 +51,7 @@ class Check(commands.Cog):
                     title="Manegement_001",
                     description=f"送信者: {str(message.author)}\n内容:{message.content}",
                     color=0xff0000)
-                await message.guild.get_channel(715154878166466671).send(embed=kensyutu)
+                await message.guild.get_channel(715142539535056907).send(embed=kensyutu)
                 if tyuui in member.roles:  # 注意がある場合は警告に変更
                     await member.add_roles(keikoku)
                     await member.remove_roles(tyuui)
