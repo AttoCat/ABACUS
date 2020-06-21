@@ -96,6 +96,8 @@ class Play(commands.Cog):
 
     @commands.command()
     async def touhyou(self, ctx, title, *args):
+        if len(args) >= 21:
+            raise commands.BadArgument
         emoji = 0x0001f1e6  # 絵文字定数（A）
         num = 0
         naiyou = []
