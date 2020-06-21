@@ -97,14 +97,16 @@ class Play(commands.Cog):
     @commands.command()
     async def touhyou(self, ctx, title, *args):
         emoji = 0x0001f1e6  # 絵文字定数（A）
+        num = 0
         naiyou = []
         if len(args) == 0:
-            raise commands.BadArgument
-        num = 0
-        for content in args:
-            tuika = chr(emoji + num) + "：" + str(content)
-            num += 1
-            naiyou.append(tuika)
+            naiyou.append(chr(emoji) + "：そう思う")
+            naiyou.append(chr(emoji + 1) + "：そう思わない")
+        else:
+            for content in args:
+                tuika = chr(emoji + num) + "：" + str(content)
+                num += 1
+                naiyou.append(tuika)
         msg = "\n".join(naiyou)
         embed = discord.Embed(
             title="投票",
@@ -113,7 +115,7 @@ class Play(commands.Cog):
             color=0x3aee67)
         msg = await ctx.send(embed=embed)
         await ctx.message.delete()
-        for num in range(len(args)):
+        for num in range(len(naiyou)):
             tuika = chr((emoji + num))
             await msg.add_reaction(tuika)
 
