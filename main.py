@@ -43,8 +43,8 @@ EXTENSIONS = [
 
 
 class Hiikun(commands.Bot):
-    def __init__(self, command_prefix, **option):
-        super().__init__(command_prefix, **option)
+    def __init__(self, command_prefix):
+        super().__init__(command_prefix)
 
         for cog in EXTENSIONS:
             try:
