@@ -102,8 +102,8 @@ class Special(commands.Cog):
                 f"**寄付の方法...**\n"
                 f"1.欲しいものリストから寄付\n"
                 f" [欲しいものリスト](https://www.amazon.co.jp/hz/wishlist/ls/28QJULCB96QI8?ref_=wl_share)\n"
-                f"↑にはAttoCatが欲しいものが全て入っています！"
-                f"2.AmazonギフトカードまたはKyashから寄付"
+                f"↑にはAttoCatが欲しいものが全て入っています！\n"
+                f"2.AmazonギフトカードまたはKyashから寄付\n"
                 f"AttoCat宛にDMでコード（Kyashの場合はリンク）を送ってください！"),
             color=0x4e37fb)
         await ctx.send(embed=embed)
