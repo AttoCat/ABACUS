@@ -89,6 +89,25 @@ class Special(commands.Cog):
                 self._last_result = ret
                 await ctx.send(f'```py\n{value}{ret}\n```')
 
+    @commands.command()
+    async def donate(self, ctx):
+        embed = discord.Embed(
+            title="寄付はこちらから！",
+            description=(
+                f"\n**寄付をしていただけると…**\n"
+                f"1.AttoCatにものすごく感謝される\n"
+                f"2.ABACUSがより高性能になる\n"
+                f"3.要望を優先的にできる\n"
+                f"  などなど、嬉しいことがいっぱいあります！\n\n"
+                f"**寄付の方法...**\n"
+                f"1.欲しいものリストから寄付\n"
+                f" [欲しいものリスト](https://www.amazon.co.jp/hz/wishlist/ls/28QJULCB96QI8?ref_=wl_share)\n"
+                f"↑にはAttoCatが欲しいものが全て入っています！"
+                f"2.AmazonギフトカードまたはKyashから寄付"
+                f"AttoCat宛にDMでコード（Kyashの場合はリンク）を送ってください！"),
+            color=0x4e37fb)
+        await ctx.send(embed=embed)
+
 
 def setup(bot):
     bot.add_cog(Special(bot))
