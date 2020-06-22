@@ -175,7 +175,7 @@ class Play(commands.Cog):
                     f"不明なエラーが発生しました。\nエラー内容:\n{error}"),
                 color=0xff0000)
             await ctx.message.delete()
-            await ctx.channel.send(embed=embed, delete_after=10)
+            await ctx.channel.send(embed=embed)
             return
 
 
