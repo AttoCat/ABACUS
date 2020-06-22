@@ -97,7 +97,7 @@ class Play(commands.Cog):
     @commands.command()
     async def touhyou(self, ctx, title, *args):
         if len(args) >= 21:
-            raise commands.BadArgument
+            raise commands.MissingRequiredArgument
         emoji = 0x0001f1e6  # 絵文字定数（A）
         num = 0
         naiyou = []
@@ -135,7 +135,7 @@ class Play(commands.Cog):
             title="使用状況",
             description=(
                 f"Memory...{round(use, 1)}GB/{round(total, 1)}GB {kekka}%\n"
-                f"`[{memorymeter}`]\n"
+                f"`[{memorymeter}]`\n"
                 f"CPU...{cpu}%\n"
                 f"`[{cpumeter}]`"),
             color=0xff0000)
@@ -156,6 +156,14 @@ class Play(commands.Cog):
                 title="Error",
                 description=(
                     f"不正な引数です！\nInvalid argument passed."),
+                color=0xff0000)
+            await ctx.message.delete()
+            await ctx.channel.send(embed=embed, delete_after=10)
+            return
+        elif isinstance(error, commands.MissingRequiredArgument):
+            embed = discord.Embed(
+                title="Error",
+                description=f"引数の数が不正です！\nInvalid input.",
                 color=0xff0000)
             await ctx.message.delete()
             await ctx.channel.send(embed=embed, delete_after=10)
