@@ -17,22 +17,18 @@ class Check(commands.Cog):
         self.guild = self.bot.get_guild(711374787892740148)
         self.dev = self.guild.get_member(602668987112751125)
         self.nsfw = self.guild.get_channel(713050662774112306)
-        await self.reload()
+        await self.ngword()
 
-    async def reload(self, ch=None):
+    async def ngword(self, ch=None, do=None, content=None):
         async with aiofiles.open('allbot.json', 'r') as ng:  # jsonファイルから暴言リストを読み込み
             data = await ng.read()
         scanlist = json.loads(data)
         self.scan = scanlist['henkoulist']
         self.t = Tokenizer(
             "dictionary.csv", udic_type="simpledic", udic_enc="utf8")
-        if ch == None:
-            return
-        else:
-            try:
-                channel = self.bot.get_channel(ch)
-            except ValueError:
-                raise commands.BadArgument
+        channel = self.bot.get_channel(ch)
+        if do == "print":
+            print(self.scan)
             kekka = []
             num = 1
             for word in self.scan:
@@ -44,6 +40,54 @@ class Check(commands.Cog):
                 description=f"{msg}"
             )
             await channel.send(embed=embed, delete_after=10)
+            return
+        elif do == ("add" or "remove"):
+            if do == "add":
+                element = "に要素を追加"
+                self.scan.append(content)
+            else:
+                element = "から要素を削除"
+                try:
+                    print(content)
+                    self.scan.remove(content)
+                except ValueError:
+                    raise commands.BadArgument
+            kekka = {'henkoulist': self.scan}
+            async with aiofiles.open('allbot.json', 'w') as ng:  # 追加後のリストに内容を置き換え
+                await ng.write(json.dumps(kekka, indent=4))  # 書き込み
+            embed = discord.Embed(
+                title="Done.",
+                description=(
+                    f"暴言リスト{element}しました。\nOperation complete."),
+                color=0x4169e1)
+            await channel.send(embed=embed)
+            return
+
+    @commands.group()
+    @commands.has_role(713321552271376444)
+    async def ng(self, ctx):
+        if ctx.invoked_subcommand is None:
+            await ctx.send('このコマンドにはサブコマンドが必要です。')
+            return
+
+    @ng.command()
+    async def add(self, ctx, content):
+        await self.ngword(ch=ctx.channel.id, do="add", content=content)
+        return
+
+    @ng.command()
+    async def remove(self, ctx, content: str):
+        await self.ngword(ch=ctx.channel.id, do="remove", content=content)
+        print(content)
+        return
+
+    @ng.command()
+    async def print(self, ctx):
+        await self.ngword(ch=ctx.channel.id, do="print", content=None)
+        return
+
+    async def userdict(self, msg, do=None):
+        pass
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -86,54 +130,6 @@ class Check(commands.Cog):
                 await message.channel.send(
                     embed=embed)
                 return
-
-    @commands.command(aliases=['ba'])
-    @commands.is_owner()
-    async def bougenadd(self, ctx, naiyou):
-        async with aiofiles.open('allbot.json', 'r') as bougen:  # 暴言リストを読み込み
-            data = await bougen.read()
-        loadbougen = json.loads(data)
-        bougenlist = loadbougen['henkoulist']
-        bougenlist.append(naiyou)  # 読み込んだリストに内容を追加
-        kekka = {'henkoulist': bougenlist}
-        async with aiofiles.open('allbot.json', 'w') as bougen:  # 追加後のリストに内容を置き換え
-            await bougen.write(json.dumps(kekka, indent=4))  # 書き込み
-        embed = discord.Embed(
-            title="Done.",
-            description=(
-                f"暴言リストに要素を追加しました。\nAdd complete."),
-            color=0x4169e1)
-        await ctx.channel.send(embed=embed, delete_after=10)
-        return await ctx.message.delete()
-
-    @commands.command(aliases=['br'])
-    @commands.is_owner()
-    async def bougenremove(self, ctx, naiyou):
-        async with aiofiles.open('allbot.json', 'r') as bougen:
-            data = await bougen.read()
-        loadbougen = json.loads(data)
-        bougenlist = loadbougen['henkoulist']
-        try:
-            bougenlist.remove(naiyou)
-        except ValueError:
-            embed = discord.Embed(
-                title="Error",
-                description=(
-                    f"不正な引数です！\nInvalid argument passed."),
-                color=0xff0000)
-            await ctx.message.delete()
-            await ctx.channel.send(embed=embed, delete_after=10)
-            return
-        kekka = {'henkoulist': bougenlist}
-        async with aiofiles.open('allbot.json', 'w') as bougen:
-            await bougen.write(json.dumps(kekka, indent=4))
-        embed = discord.Embed(
-            title="Done.",
-            description=(
-                f"暴言リストから要素を削除しました。\nDelete complete."),
-            color=0x4169e1)
-        await ctx.channel.send(embed=embed, delete_after=10)
-        return await ctx.message.delete()
 
     @commands.command(aliases=['ks'])
     @commands.has_role(713321552271376444)
@@ -192,11 +188,6 @@ class Check(commands.Cog):
             description=f"行  名前  品詞  読み\n{msg}")
         await ctx.channel.send(embed=embed, delete_after=10)
         return await ctx.message.delete()
-
-    @commands.command(aliases=['bp'])
-    @commands.has_role(713321552271376444)
-    async def bougenprint(self, ctx):
-        await self.reload(ch=ctx.channel.id)
 
     async def cog_command_error(self, ctx, error):
         if isinstance(error, commands.MissingRole):
