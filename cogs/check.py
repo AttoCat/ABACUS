@@ -17,23 +17,45 @@ class Check(commands.Cog):
         self.guild = self.bot.get_guild(711374787892740148)
         self.dev = self.guild.get_member(602668987112751125)
         self.nsfw = self.guild.get_channel(713050662774112306)
+        await self.reload()
+
+    async def reload(self, ch=None):
+        async with aiofiles.open('allbot.json', 'r') as ng:  # jsonファイルから暴言リストを読み込み
+            data = await ng.read()
+        scanlist = json.loads(data)
+        self.scan = scanlist['henkoulist']
+        self.t = Tokenizer(
+            "dictionary.csv", udic_type="simpledic", udic_enc="utf8")
+        if ch == None:
+            return
+        else:
+            try:
+                channel = self.bot.get_channel(ch)
+            except ValueError:
+                raise commands.BadArgument
+            kekka = []
+            num = 1
+            for word in self.scan:
+                kekka.append(f"{str(num)}：{word}")
+                num += 1
+            msg = "\n".join(kekka)
+            embed = discord.Embed(
+                title="現在のNGワードリスト",
+                description=f"{msg}"
+            )
+            await channel.send(embed=embed, delete_after=10)
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        t = Tokenizer("dictionary.csv", udic_type="simpledic", udic_enc="utf8")
-        async with aiofiles.open('allbot.json', 'r') as bougen:  # jsonファイルから暴言リストを読み込み
-            data = await bougen.read()
-        loadbougen = json.loads(data)
-        bougenlist = loadbougen['henkoulist']
         member = message.author
         if member.bot:
             return
         elif message.content.startswith("ab!"):
             return
         moji = message.content
-        kekka = t.tokenize(moji, wakati=True)
+        kekka = self.t.tokenize(moji, wakati=True)
         for word in kekka:
-            if word in bougenlist:
+            if word in self.scan:
                 if message.channel == self.nsfw:
                     return
                 kensyutu = kekka.index(word)
@@ -48,7 +70,7 @@ class Check(commands.Cog):
                     description=f"NGワードが含まれていたため、削除しました。",
                     color=0xff0000)
                 kensyutu = discord.Embed(
-                    title="Manegement_001",
+                    title="NGワードを検出",
                     description=f"送信者: {str(message.author)}\n内容:{message.content}",
                     color=0xff0000)
                 await message.guild.get_channel(715142539535056907).send(embed=kensyutu)
@@ -75,7 +97,7 @@ class Check(commands.Cog):
         bougenlist.append(naiyou)  # 読み込んだリストに内容を追加
         kekka = {'henkoulist': bougenlist}
         async with aiofiles.open('allbot.json', 'w') as bougen:  # 追加後のリストに内容を置き換え
-            await bougen.write(json.dumps(kekka, indent=4))
+            await bougen.write(json.dumps(kekka, indent=4))  # 書き込み
         embed = discord.Embed(
             title="Done.",
             description=(
@@ -174,21 +196,7 @@ class Check(commands.Cog):
     @commands.command(aliases=['bp'])
     @commands.has_role(713321552271376444)
     async def bougenprint(self, ctx):
-        async with aiofiles.open('allbot.json', 'r') as bougen:
-            data = await bougen.read()
-        loadbougen = json.loads(data)
-        bougenlist = loadbougen['henkoulist']
-        kekka = []
-        num = 1
-        for word in bougenlist:
-            kekka.append(f"{str(num)}：{word}")
-            num += 1
-        msg = "\n".join(kekka)
-        embed = discord.Embed(
-            title="現在のNGワードリスト",
-            description=f"{msg}"
-        )
-        await ctx.send(embed=embed, delete_after=10)
+        await self.reload(ch=ctx.channel.id)
 
     async def cog_command_error(self, ctx, error):
         if isinstance(error, commands.MissingRole):
