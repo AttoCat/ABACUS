@@ -17,10 +17,7 @@ class Check(commands.Cog):
         self.guild = self.bot.get_guild(711374787892740148)
         self.dev = self.guild.get_member(602668987112751125)
         self.nsfw = self.guild.get_channel(713050662774112306)
-        async with aiofiles.open('allbot.json', 'r') as ng:  # jsonファイルから暴言リストを読み込み
-            data = await ng.read()
-        scanlist = json.loads(data)
-        self.scan = scanlist['henkoulist']
+        await self.load()
         self.t = Tokenizer(
             "dictionary.csv", udic_type="simpledic", udic_enc="utf8")
 
@@ -28,6 +25,9 @@ class Check(commands.Cog):
         kekka = {'henkoulist': self.scan}
         async with aiofiles.open('allbot.json', 'w') as ng:  # 追加後のリストに内容を置き換え
             await ng.write(json.dumps(kekka, indent=4))
+        await self.load()
+
+    async def load(self):
         async with aiofiles.open('allbot.json', 'r') as ng:  # jsonファイルから暴言リストを読み込み
             data = await ng.read()
         scanlist = json.loads(data)
@@ -200,11 +200,29 @@ class Check(commands.Cog):
             await ctx.message.delete()
             await ctx.channel.send(embed=embed, delete_after=10)
             return
+        elif isinstance(error, commands.BadArgument):
+            embed = discord.Embed(
+                title="Error",
+                description=(
+                    f"不正な引数です！\nInvalid argument passed."),
+                color=0xff0000)
+            await ctx.message.delete()
+            await ctx.channel.send(embed=embed, delete_after=10)
+            return
         elif isinstance(error, commands.NotOwner):
             embed = discord.Embed(
                 title="Error",
                 description=(
                     f"このコマンドは開発者のみ実行できます。\nCan only be executed by the creator."),
+                color=0xff0000)
+            await ctx.message.delete()
+            await ctx.channel.send(embed=embed, delete_after=10)
+            return
+        elif isinstance(error, commands.TooManyArguments):
+            embed = discord.Embed(
+                title="Error",
+                description=(
+                    f"引数の数が不正です！\nCan only be executed by the creator."),
                 color=0xff0000)
             await ctx.message.delete()
             await ctx.channel.send(embed=embed, delete_after=10)
