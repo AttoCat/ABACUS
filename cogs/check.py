@@ -17,51 +17,21 @@ class Check(commands.Cog):
         self.guild = self.bot.get_guild(711374787892740148)
         self.dev = self.guild.get_member(602668987112751125)
         self.nsfw = self.guild.get_channel(713050662774112306)
-        await self.ngword()
-
-    async def ngword(self, ch=None, do=None, content=None):
         async with aiofiles.open('allbot.json', 'r') as ng:  # jsonファイルから暴言リストを読み込み
             data = await ng.read()
         scanlist = json.loads(data)
         self.scan = scanlist['henkoulist']
         self.t = Tokenizer(
             "dictionary.csv", udic_type="simpledic", udic_enc="utf8")
-        channel = self.bot.get_channel(ch)
-        if do == "print":
-            print(self.scan)
-            kekka = []
-            num = 1
-            for word in self.scan:
-                kekka.append(f"{str(num)}：{word}")
-                num += 1
-            msg = "\n".join(kekka)
-            embed = discord.Embed(
-                title="現在のNGワードリスト",
-                description=f"{msg}"
-            )
-            await channel.send(embed=embed, delete_after=10)
-            return
-        elif do == ("add" or "remove"):
-            if do == "add":
-                element = "に要素を追加"
-                self.scan.append(content)
-            else:
-                element = "から要素を削除"
-                try:
-                    print(content)
-                    self.scan.remove(content)
-                except ValueError:
-                    raise commands.BadArgument
-            kekka = {'henkoulist': self.scan}
-            async with aiofiles.open('allbot.json', 'w') as ng:  # 追加後のリストに内容を置き換え
-                await ng.write(json.dumps(kekka, indent=4))  # 書き込み
-            embed = discord.Embed(
-                title="Done.",
-                description=(
-                    f"暴言リスト{element}しました。\nOperation complete."),
-                color=0x4169e1)
-            await channel.send(embed=embed)
-            return
+
+    async def write(self):
+        kekka = {'henkoulist': self.scan}
+        async with aiofiles.open('allbot.json', 'w') as ng:  # 追加後のリストに内容を置き換え
+            await ng.write(json.dumps(kekka, indent=4))
+        async with aiofiles.open('allbot.json', 'r') as ng:  # jsonファイルから暴言リストを読み込み
+            data = await ng.read()
+        scanlist = json.loads(data)
+        self.scan = scanlist['henkoulist']
 
     @commands.group()
     @commands.has_role(713321552271376444)
@@ -72,19 +42,42 @@ class Check(commands.Cog):
 
     @ng.command()
     async def add(self, ctx, content):
-        await self.ngword(ch=ctx.channel.id, do="add", content=content)
-        return
+        self.scan.append(content)
+        embed = discord.Embed(
+            title="Done.",
+            description=(
+                f"暴言リストに要素を追加しました。\nAdd complete."),
+            color=0x4169e1)
+        await ctx.send(embed=embed)
+        await self.write
 
     @ng.command()
     async def remove(self, ctx, content: str):
-        await self.ngword(ch=ctx.channel.id, do="remove", content=content)
-        print(content)
-        return
+        try:
+            self.scan.remove(content)
+        except ValueError:
+            raise commands.BadArgument
+        embed = discord.Embed(
+            title="Done.",
+            description=(
+                f"暴言リストから要素を削除しました。\nRemove complete."),
+            color=0x4169e1)
+        await ctx.send(embed=embed)
+        await self.write()
 
     @ng.command()
     async def print(self, ctx):
-        await self.ngword(ch=ctx.channel.id, do="print", content=None)
-        return
+        kekka = []
+        num = 1
+        for word in self.scan:
+            kekka.append(f"{str(num)}：{word}")
+            num += 1
+        msg = "\n".join(kekka)
+        embed = discord.Embed(
+            title="現在のNGワードリスト",
+            description=f"{msg}"
+        )
+        await ctx.send(embed=embed, delete_after=10)
 
     async def userdict(self, msg, do=None):
         pass
