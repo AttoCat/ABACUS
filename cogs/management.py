@@ -145,9 +145,9 @@ class Management(commands.Cog):
                             await member.remove_roles(self.seigen)
                             await member.add_roles(self.normal)
 
-                def check(reaction, user):
+                def check(reaction, _user):
                     msg = str(reaction.emoji)
-                    return user == message.author and msg in bangou
+                    return _user == message.author and msg in bangou
 
                 while True:
                     content = [
@@ -155,7 +155,7 @@ class Management(commands.Cog):
                         "注意役職を付与", "警告役職を付与", "注意系役職全解除"
                     ]
                     try:
-                        reaction, user = await self.bot.wait_for("reaction_add", timeout=60.0, check=check)
+                        reaction, _user = await self.bot.wait_for("reaction_add", timeout=60.0, check=check)
                     except asyncio.TimeoutError:
                         embed = discord.Embed(
                             title="Timeout",

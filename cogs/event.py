@@ -48,7 +48,8 @@ class Event(commands.Cog):
         rule = self.guild.get_channel(711379195992997949)
         yaku = self.guild.get_channel(712410294496002090)
         naiyou = (
-            f"{member.mention}さんようこそBOTのすべてへ！\nまずは{rule.mention}でルールを確認し、同意する場合は{yaku.mention}でその他の役職をもらいましょう！")
+            f"{member.mention}さんようこそBOTのすべてへ！\n"
+            f"まずは{rule.mention}でルールを確認し、同意する場合は{yaku.mention}でその他の役職をもらいましょう！")
         embed = discord.Embed(
             title=(f"{member}さんが参加しました！"),
             description=naiyou,

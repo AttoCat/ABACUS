@@ -49,7 +49,7 @@ class Check(commands.Cog):
                 f"暴言リストに要素を追加しました。\nAdd complete."),
             color=0x4169e1)
         await ctx.send(embed=embed)
-        await self.write
+        await self.write()
 
     @ng.command()
     async def remove(self, ctx, content: str):
