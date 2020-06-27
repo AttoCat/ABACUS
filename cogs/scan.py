@@ -1,4 +1,3 @@
-import numpy as np
 from janome.tokenizer import Tokenizer
 from discord.ext import commands
 import discord
