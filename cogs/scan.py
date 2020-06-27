@@ -23,6 +23,7 @@ class Scan(commands.Cog):
         self.log2 = self.system.get_channel(726329157948145696)
         await self.load_json()
         await self.load_csv()
+        await self.reload_csv()
 
     @commands.Cog.listener()
     async def on_message(self, message):
