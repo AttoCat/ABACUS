@@ -97,7 +97,7 @@ class Play(commands.Cog):
     @commands.command()
     async def touhyou(self, ctx, title, *args):
         if len(args) >= 21:
-            raise commands.MissingRequiredArgument
+            raise commands.TooManyArguments()
         emoji = 0x0001f1e6  # 絵文字定数（A）
         num = 0
         naiyou = []
@@ -161,6 +161,14 @@ class Play(commands.Cog):
             await ctx.channel.send(embed=embed, delete_after=10)
             return
         elif isinstance(error, commands.MissingRequiredArgument):
+            embed = discord.Embed(
+                title="Error",
+                description=f"想定しない引数が渡されました！\nInvalid input.",
+                color=0xff0000)
+            await ctx.message.delete()
+            await ctx.channel.send(embed=embed, delete_after=10)
+            return
+        elif isinstance(error, commands.TooManyArguments):
             embed = discord.Embed(
                 title="Error",
                 description=f"引数の数が不正です！\nInvalid input.",
