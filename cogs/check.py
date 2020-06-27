@@ -17,21 +17,29 @@ class Check(commands.Cog):
         self.guild = self.bot.get_guild(711374787892740148)
         self.dev = self.guild.get_member(602668987112751125)
         self.nsfw = self.guild.get_channel(713050662774112306)
+        self.system = self.bot.get_guild(682218950268157982)
+        self.log1 = self.system.get_channel(726329141540159568)
         await self.load()
         self.t = Tokenizer(
             "dictionary.csv", udic_type="simpledic", udic_enc="utf8")
 
-    async def write(self):
-        kekka = {'henkoulist': self.scan}
-        async with aiofiles.open('allbot.json', 'w') as ng:  # 追加後のリストに内容を置き換え
-            await ng.write(json.dumps(kekka, indent=4))
-        await self.load()
+    # async def write(self):
+    #     kekka = {'henkoulist': self.scan}
+    #     async with aiofiles.open('allbot.json', 'w') as ng:  # 追加後のリストに内容を置き換え
+    #         await ng.write(json.dumps(kekka, indent=4))
+    #     await self.load()
 
     async def load(self):
         async with aiofiles.open('allbot.json', 'r') as ng:  # jsonファイルから暴言リストを読み込み
             data = await ng.read()
         scanlist = json.loads(data)
         self.scan = scanlist['henkoulist']
+        strage = self.log1
+        # file = discord.File("allbot.json")
+        # await strage.send(file=file)
+        id = strage.last_message_id
+        msg = await strage.fetch_message(id)
+        await msg.attachments[0].save("test.json")
 
     @commands.group()
     @commands.has_role(713321552271376444)
@@ -49,7 +57,7 @@ class Check(commands.Cog):
                 f"暴言リストに要素を追加しました。\nAdd complete."),
             color=0x4169e1)
         await ctx.send(embed=embed)
-        await self.write()
+        # await self.write()
 
     @ng.command()
     async def remove(self, ctx, content: str):
@@ -63,7 +71,7 @@ class Check(commands.Cog):
                 f"暴言リストから要素を削除しました。\nRemove complete."),
             color=0x4169e1)
         await ctx.send(embed=embed)
-        await self.write()
+        # await self.write()
 
     @ng.command()
     async def print(self, ctx):
@@ -77,7 +85,7 @@ class Check(commands.Cog):
             title="現在のNGワードリスト",
             description=f"{msg}"
         )
-        await ctx.send(embed=embed, delete_after=10)
+        await ctx.send(embed=embed, delete_after=60)
 
     async def userdict(self, msg, do=None):
         pass
@@ -127,7 +135,9 @@ class Check(commands.Cog):
     @commands.command(aliases=['ks'])
     @commands.has_role(713321552271376444)
     async def kaiseki(self, ctx, naiyou):
-        t = Tokenizer("dictionary.csv", udic_type="simpledic", udic_enc="utf8")
+        t = Tokenizer(
+            "dictionary.csv", udic_type="simpledic",
+            udic_enc="utf8")
         moji = naiyou
         kekka = t.tokenize(moji, wakati=True)
         await ctx.channel.send(kekka)
