@@ -8,7 +8,7 @@ import pandas as pd
 import aiofiles
 
 
-class Check(commands.Cog):
+class Scan(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
@@ -102,14 +102,14 @@ class Check(commands.Cog):
             "dictionary.csv", udic_type="simpledic", udic_enc="utf8")
 
     @commands.group()
-    @commands.has_role(713321552271376444)
+    @commands.is_owner()
     async def ng(self, ctx):
         if ctx.invoked_subcommand is None:
             await ctx.send('このコマンドにはサブコマンドが必要です。')
             return
 
     @ng.command(name='add')
-    async def _add(self, ctx, content):
+    async def ng_add(self, ctx, content):
         self.scan.append(content)
         embed = discord.Embed(
             title="Done.",
@@ -121,7 +121,7 @@ class Check(commands.Cog):
         await ctx.message.delete()
 
     @ng.command(name='remove')
-    async def _remove(self, ctx, content: str):
+    async def ng_remove(self, ctx, content: str):
         try:
             self.scan.remove(content)
         except ValueError:
@@ -136,7 +136,7 @@ class Check(commands.Cog):
         await ctx.message.delete()
 
     @ng.command(name='print')
-    async def _print(self, ctx):
+    async def ng_print(self, ctx):
         kekka = []
         num = 1
         for word in self.scan:
@@ -168,7 +168,7 @@ class Check(commands.Cog):
             return
 
     @dict.command(name="add")
-    async def _add(self, ctx, *args):
+    async def dict_add(self, ctx, *args):
         content = list(args)
         if len(content) == 2:
             content.append("名詞")
@@ -192,7 +192,7 @@ class Check(commands.Cog):
         await ctx.channel.send(embed=embed, delete_after=10)
 
     @dict.command(name='remove')
-    async def _remove(self, ctx, kazu: int):
+    async def dict_remove(self, ctx, kazu: int):
         self.df = self.df.drop(index=self.df.index[kazu])
         self.df = self.df.reset_index(drop=True)
         await self.write_csv()
@@ -206,7 +206,7 @@ class Check(commands.Cog):
         await ctx.message.delete()
 
     @dict.command(name="print")
-    async def _print(self, ctx):
+    async def dict_print(self, ctx):
         df = self.df.rename(
             columns={0: "名前", 1: "品詞", 2: "ふりがな"}
         )
@@ -274,4 +274,4 @@ class Check(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(Check(bot))
+    bot.add_cog(Scan(bot))

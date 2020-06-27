@@ -9,7 +9,7 @@ dotenv.load_dotenv()
 TOKEN = os.getenv("TOKEN")
 PREFIX = os.getenv("PREFIX")
 EXTENSIONS = [
-    "cogs.check", "cogs.management",
+    "cogs.scan", "cogs.management",
     "cogs.play", "cogs.event", "cogs.special"]
 
 
