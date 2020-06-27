@@ -56,6 +56,19 @@ class Event(commands.Cog):
             color=0x3aee67)
         await ch.send(embed=embed)
 
+    @commands.Cog.listener()
+    async def on_member_remove(self, member):
+        if self.hiibot.status == discord.Status.online:
+            return
+        ch = self.guild.get_channel(711375652107976847)
+        naiyou = (
+            f"{str(member)}さん、BOTのすべてのご利用ありがとうございました。またのお越しをお待ちしております。")
+        embed = discord.Embed(
+            title=(f"{member.mention}さんが退出しました。\n"),
+            description=naiyou,
+            color=0xff0000)
+        await ch.send(embed=embed)
+
     @commands.command()
     @commands.is_owner()
     async def say(self, ctx, *, naiyou: str):
