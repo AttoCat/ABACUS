@@ -41,17 +41,10 @@ class Play(commands.Cog):
             await ctx.send(str(member))
 
     @commands.command()
-    async def slot(self, ctx, kakuritu: int = 0):
+    async def slot(self, ctx, kakuritu: int = 343):
         slotlist = [":alien:", ":robot:", ":smiley_cat:", ":desktop:",
                     ":full_moon_with_face:", ":crossed_swords:", ":seven:"]
-        number = []
-        if kakuritu == 0:
-            content1 = random.choice(slotlist)
-            content2 = random.choice(slotlist)
-            content3 = random.choice(slotlist)
-            tousen = "0.29%"
-            ooatari = "0.041%"
-        elif kakuritu > 10000:
+        if kakuritu > 10000:
             embed = discord.Embed(
                 title="Error",
                 description=(
@@ -60,26 +53,29 @@ class Play(commands.Cog):
             await ctx.message.delete()
             await ctx.channel.send(embed=embed, delete_after=10)
             return
+        tousenlist = list(range(kakuritu))
+        k = random.choice(tousenlist)
+        if k == 0:
+            content1 = random.choice(slotlist)
+            content2 = content1
+            content3 = content2
         else:
-            for num in range(kakuritu):
-                number.append(num)
-            k = random.choice(number)
-            if k == 0:
-                content1 = random.choice(slotlist)
-                content2 = content1
-                content3 = content2
-            else:
+            while True:
                 content1 = random.choice(slotlist)
                 content2 = random.choice(slotlist)
                 content3 = random.choice(slotlist)
-            tousen = str(round(1/kakuritu*100, 1))
-            ooatari = str(round(float(tousen)/7, 1))
-            if float(tousen) == 0.0:
-                tousen = "限りなく低い"
-                ooatari = "限りなく低い"
-            else:
-                tousen = tousen + "%"
-                ooatari = ooatari + "%"
+                if content1 == content2 == content3:
+                    continue
+                else:
+                    break
+        tousen = str(round(1/kakuritu*100, 1))
+        ooatari = str(round(float(tousen)/7, 1))
+        if float(tousen) == 0.0:
+            tousen = "限りなく低い"
+            ooatari = "限りなく低い"
+        else:
+            tousen = tousen + "%"
+            ooatari = ooatari + "%"
         if content1 == content2 == content3:
             kekka = "あたり！"
             if content1 == ":seven:":
