@@ -61,13 +61,16 @@ class Management(commands.Cog):
         getlist = []
         try:
             get = self.guild.get_member(int(message.content))
+            if get is None:
+                await message.delete()
+                return
             getlist.append(get)
         except ValueError:
             getlist = message.mentions
         if len(getlist) >= 2:
             await message.channel.send("複数のメンションは使用できません！")
             await message.delete()
-            asyncio.sleep(10)
+            await asyncio.sleep(10)
             await message.channel.purge(limit=None)
             return
         elif len(getlist) == 0:
@@ -76,13 +79,13 @@ class Management(commands.Cog):
         elif getlist[0] == message.author:
             await message.channel.send("自身に対して変更を加えることは出来ません！")
             await message.delete()
-            asyncio.sleep(10)
+            await asyncio.sleep(10)
             await message.channel.purge(limit=None)
             return
         elif self.unei in getlist[0].roles:
             await message.channel.send("運営またはABACUSに対して変更を加えることは出来ません！")
             await message.delete()
-            asyncio.sleep(10)
+            await asyncio.sleep(10)
             await message.channel.purge(limit=None)
             return
         for member in members:
@@ -163,7 +166,7 @@ class Management(commands.Cog):
                                 f"時間切れです。ログは10秒後に自動で削除されます。"),
                             color=0xff0000)
                         await message.channel.send(embed=embed)
-                        asyncio.sleep(10)
+                        await asyncio.sleep(10)
                         await message.channel.purge(limit=None)
                         break
                     else:
@@ -186,7 +189,7 @@ class Management(commands.Cog):
                                     f"操作をキャンセルしました。ログは10秒後に自動で削除されます。"),
                                 color=0xff0000)
                             await message.channel.send(embed=embed)
-                            asyncio.sleep(10)
+                            await asyncio.sleep(10)
                             await message.channel.purge(limit=None)
                             return
                         embed = discord.Embed(
@@ -220,7 +223,7 @@ class Management(commands.Cog):
                                     f"操作をキャンセルしました。ログは10秒後に自動で削除されます。"),
                                 color=0xff0000)
                             await message.channel.send(embed=embed)
-                            asyncio.sleep(10)
+                            await asyncio.sleep(10)
                             await message.channel.purge(limit=None)
                         break
                     break
