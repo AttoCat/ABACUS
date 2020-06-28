@@ -34,7 +34,7 @@ class Play(commands.Cog):
     async def userdiscriminator(self, ctx, dis: str):
         guild = self.bot.get_guild(711374787892740148)
         member = discord.utils.get(guild.members, discriminator=dis)
-        if member == None:
+        if member is None:
             raise commands.BadArgument()
         else:
             await ctx.message.delete()
