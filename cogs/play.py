@@ -84,7 +84,7 @@ class Play(commands.Cog):
         embed = discord.Embed(
             title="スロット結果",
             description=(
-                f"{content1}|{content2}|{content3}\n{kekka}\n当選確率 = {tousen}\n大当たり率 = {ooatari}"),
+                f"{content1}|{content2}|{content3}\n{kekka}\n当選確率 = {tousen}%\n大当たり率 = {ooatari}%"),
             color=0x3aee67)
         embed.set_footer(text=f"実行者：{ctx.author}")
         await ctx.send(embed=embed)
