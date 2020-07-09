@@ -1,5 +1,7 @@
 import os
+import signal
 import dotenv
+import asyncio
 import discord
 from discord.ext import commands
 import traceback
@@ -11,6 +13,13 @@ PREFIX = os.getenv("PREFIX")
 EXTENSIONS = [
     "cogs.scan", "cogs.management",
     "cogs.play", "cogs.event", "cogs.special"]
+
+
+def handler(signum, frame):
+    print("hogehogehogehogehogehogehogehoge")
+
+
+signal.signal(signal.SIGTERM, handler)
 
 
 class Hiikun(commands.Bot):
