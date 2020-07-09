@@ -12,8 +12,9 @@ class Event(commands.Cog):
         self.guild = self.bot.get_guild(711374787892740148)
         self.dev = self.guild.get_member(602668987112751125)
         self.rank = self.guild.get_channel(713389883569340436)
-        self.hiibot = self.guild.get_member(713685021277552640)
+        self.hiibot = self.guild.get_member(727164114513690688)
         self.log = self.guild.get_channel(715154878166466671)
+        self.kakutyousi = (".jpg", ".jpeg", ".png")
 
     @commands.command()
     async def devdm(self, ctx, *, naiyou):
@@ -39,6 +40,19 @@ class Event(commands.Cog):
                 return
             elif not message.content.startswith("!rank"):
                 await message.delete()
+                return
+        if message.channel.is_nsfw():
+            if not message.attachments:
+                return
+            for attachment in message.attachments:
+                if not attachment.url.endswith(self.kakutyousi):
+                    return
+                if "SPOILER_" in attachment.url:
+                    return print("tessssssssssst")
+                else:
+                    print("goooooooooood")
+                    print(attachment.url)
+                    print(message.content)
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
