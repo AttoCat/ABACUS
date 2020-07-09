@@ -64,15 +64,14 @@ class Play(commands.Cog):
                 content1 = random.choice(slotlist)
                 content2 = random.choice(slotlist)
                 content3 = random.choice(slotlist)
-                if content1 == content2 == content3:
-                    continue
-                else:
+                if not(content1 == content2 == content3):
                     break
         tousen = str(round(1/kakuritu*100, 1))
         ooatari = str(round(float(tousen)/7, 1))
-        if float(tousen) == 0.0:
-            tousen = "限りなく低い"
+        if float(ooatari) == 0.0:
             ooatari = "限りなく低い"
+            if float(tousen) == 0.0:
+                tousen = "限りなく低い"
         else:
             tousen = tousen + "%"
             ooatari = ooatari + "%"
