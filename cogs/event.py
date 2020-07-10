@@ -65,7 +65,7 @@ class Event(commands.Cog):
             f"{member.mention}さんようこそBOTのすべてへ！\n"
             f"まずは{rule.mention}でルールを確認し、同意する場合は{yaku.mention}でその他の役職をもらいましょう！")
         embed = discord.Embed(
-            title=(f"{member}さんが参加しました！"),
+            title=(f"{member.display_name}さんが参加しました！"),
             description=naiyou,
             color=0x3aee67)
         await ch.send(embed=embed)
@@ -76,9 +76,9 @@ class Event(commands.Cog):
             return
         ch = self.guild.get_channel(711375652107976847)
         naiyou = (
-            f"{str(member)}さん、BOTのすべてのご利用ありがとうございました。またのお越しをお待ちしております。")
+            f"{member.display_name}さん、BOTのすべてのご利用ありがとうございました。またのお越しをお待ちしております。")
         embed = discord.Embed(
-            title=(f"{member.mention}さんが退出しました。\n"),
+            title=(f"{member.display_name}さんが退出しました。\n"),
             description=naiyou,
             color=0xff0000)
         await ch.send(embed=embed)
