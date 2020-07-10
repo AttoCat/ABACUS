@@ -44,47 +44,33 @@ class Play(commands.Cog):
     async def slot(self, ctx, kakuritu: int = 343):
         slotlist = [":alien:", ":robot:", ":smiley_cat:", ":desktop:",
                     ":full_moon_with_face:", ":crossed_swords:", ":seven:"]
-        if kakuritu > 10000:
-            embed = discord.Embed(
-                title="Error",
-                description=(
-                    f"引数が大きすぎます！最大数は10000です！\nArgument is too large."),
-                color=0xff0000)
-            await ctx.message.delete()
-            await ctx.channel.send(embed=embed, delete_after=10)
-            return
+        if kakuritu > 10000 or kakuritu == 0:
+            raise commands.BadArgument()
         tousenlist = list(range(kakuritu))
         k = random.choice(tousenlist)
         if k == 0:
             content1 = random.choice(slotlist)
             content2 = content1
-            content3 = content2
+            content3 = content1
+            kekka = "あたり！"
         else:
             while True:
                 content1 = random.choice(slotlist)
                 content2 = random.choice(slotlist)
                 content3 = random.choice(slotlist)
-                if not(content1 == content2 == content3):
+                if not content1 == content2 == content3:
+                    kekka = "はずれ！"
                     break
-        tousen = str(round(1/kakuritu*100, 1))
-        ooatari = str(round(float(tousen)/7, 1))
-        if float(ooatari) == 0.0:
+        tousen = str(round(1/kakuritu*100, 3)) + "%"
+        ooatari = str(round(float(tousen[:-1])/7, 3)) + "%"
+        if tousen == "0.0%":
+            tousen = "限りなく低い"
+        if ooatari == "0.0%":
             ooatari = "限りなく低い"
-            if float(tousen) == 0.0:
-                tousen = "限りなく低い"
-        else:
-            tousen = tousen + "%"
-            ooatari = ooatari + "%"
-        if content1 == content2 == content3:
-            kekka = "あたり！"
-            if content1 == ":seven:":
-                kekka = "大当たり！"
-        else:
-            kekka = "はずれ！"
         embed = discord.Embed(
             title="スロット結果",
             description=(
-                f"{content1}|{content2}|{content3}\n{kekka}\n当選確率 = {tousen}%\n大当たり率 = {ooatari}%"),
+                f"{content1}|{content2}|{content3}\n{kekka}\n当選確率 = {tousen}\n大当たり率 = {ooatari}"),
             color=0x3aee67)
         embed.set_footer(text=f"実行者：{ctx.author}")
         await ctx.send(embed=embed)
