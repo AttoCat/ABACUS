@@ -49,16 +49,15 @@ class Play(commands.Cog):
         tousenlist = list(range(chance))
         k = random.choice(tousenlist)
         if k == 0:
-            content1 = random.choice(slotlist)
-            content2 = content1
-            content3 = content1
-            kekka = "あたり！"
+            content = [random.choice(slotlist)] * 3
+            if content[0] == ":seven:":
+                kekka = "大あたり！"
+            else:
+                kekka = "あたり！"
         else:
             while True:
-                content1 = random.choice(slotlist)
-                content2 = random.choice(slotlist)
-                content3 = random.choice(slotlist)
-                if not content1 == content2 == content3:
+                content = random.choices(slotlist, k=3)
+                if not len(set(content)) == 1:
                     kekka = "はずれ！"
                     break
         tousen = str(round(1/chance*100, 3)) + "%"
@@ -70,7 +69,8 @@ class Play(commands.Cog):
         embed = discord.Embed(
             title="スロット結果",
             description=(
-                f"{content1}|{content2}|{content3}\n{kekka}\n当選確率 = {tousen}\n大当たり率 = {ooatari}"),
+                "|".join(content) +
+                f"\n{kekka}\n当選確率 = {tousen}\n大当たり率 = {ooatari}"),
             color=0x3aee67)
         embed.set_footer(text=f"実行者：{ctx.author}")
         await ctx.send(embed=embed)
