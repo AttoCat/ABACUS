@@ -29,9 +29,9 @@ class Play(commands.Cog):
         await ctx.message.delete()
         await ctx.send(embed=embed)
 
-    @commands.command(aliases=["gd"])
+    @commands.command(aliases=["dis"])
     @commands.is_owner()
-    async def userdiscriminator(self, ctx, dis: str):
+    async def discriminator(self, ctx, dis: str):
         guild = self.bot.get_guild(711374787892740148)
         member = discord.utils.get(guild.members, discriminator=dis)
         if member is None:
@@ -41,12 +41,12 @@ class Play(commands.Cog):
             await ctx.send(str(member))
 
     @commands.command()
-    async def slot(self, ctx, kakuritu: int = 343):
+    async def slot(self, ctx, chance: int = 343):
         slotlist = [":alien:", ":robot:", ":smiley_cat:", ":desktop:",
                     ":full_moon_with_face:", ":crossed_swords:", ":seven:"]
-        if kakuritu > 10000 or kakuritu == 0:
+        if chance > 10000 or chance == 0:
             raise commands.BadArgument()
-        tousenlist = list(range(kakuritu))
+        tousenlist = list(range(chance))
         k = random.choice(tousenlist)
         if k == 0:
             content1 = random.choice(slotlist)
@@ -61,7 +61,7 @@ class Play(commands.Cog):
                 if not content1 == content2 == content3:
                     kekka = "はずれ！"
                     break
-        tousen = str(round(1/kakuritu*100, 3)) + "%"
+        tousen = str(round(1/chance*100, 3)) + "%"
         ooatari = str(round(float(tousen[:-1])/7, 3)) + "%"
         if tousen == "0.0%":
             tousen = "限りなく低い"
