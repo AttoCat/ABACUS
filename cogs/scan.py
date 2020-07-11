@@ -33,38 +33,37 @@ class Scan(commands.Cog):
             return
         moji = message.content
         kekka = self.t.tokenize(moji, wakati=True)
-        for word in kekka:
-            if word in self.scan:
-                if message.channel == self.nsfw:
-                    return
-                kensyutu = kekka.index(word)
-                normal = message.guild.get_role(
-                    711375295172706313)  # ノーマルメンバー役職
-                tyuui = message.guild.get_role(715809531829157938)  # 「注意」役職
-                keikoku = message.guild.get_role(715809422148108298)  # 「警告」役職
-                seigen = message.guild.get_role(714733639505543222)  # 「制限」役職
-                await message.delete()
-                embed = discord.Embed(
-                    title="Message deleted",
-                    description=f"NGワードが含まれていたため、削除しました。",
-                    color=0xff0000)
-                kensyutu = discord.Embed(
-                    title="NGワードを検出",
-                    description=f"送信者: {str(message.author)}\n内容:{message.content}",
-                    color=0xff0000)
-                await message.guild.get_channel(715142539535056907).send(embed=kensyutu)
-                if tyuui in member.roles:  # 注意がある場合は警告に変更
-                    await member.add_roles(keikoku)
-                    await member.remove_roles(tyuui)
-                elif keikoku in member.roles:  # 警告がある場合は制限付きに
-                    await member.remove_roles(normal)
-                    await member.add_roles(seigen)
-                    await member.remove_roles(keikoku)
-                else:  # 何も持っていなければ注意を
-                    await member.add_roles(tyuui)
-                await message.channel.send(
-                    embed=embed)
-                return
+        if not any((word in self.scan) for word in kekka):
+            return
+        if message.channel == self.nsfw:
+            return
+        normal = message.guild.get_role(
+            711375295172706313)  # ノーマルメンバー役職
+        tyuui = message.guild.get_role(715809531829157938)  # 「注意」役職
+        keikoku = message.guild.get_role(715809422148108298)  # 「警告」役職
+        seigen = message.guild.get_role(714733639505543222)  # 「制限」役職
+        await message.delete()
+        embed = discord.Embed(
+            title="Message deleted",
+            description=f"NGワードが含まれていたため、削除しました。",
+            color=0xff0000)
+        kensyutu = discord.Embed(
+            title="NGワードを検出",
+            description=f"送信者: {str(message.author)}\n内容:{message.content}",
+            color=0xff0000)
+        await message.guild.get_channel(715142539535056907).send(embed=kensyutu)
+        if tyuui in member.roles:  # 注意がある場合は警告に変更
+            await member.add_roles(keikoku)
+            await member.remove_roles(tyuui)
+        elif keikoku in member.roles:  # 警告がある場合は制限付きに
+            await member.remove_roles(normal)
+            await member.add_roles(seigen)
+            await member.remove_roles(keikoku)
+        else:  # 何も持っていなければ注意を
+            await member.add_roles(tyuui)
+        await message.channel.send(
+            embed=embed)
+        return
 
     async def write_json(self):
         strage = self.log1
