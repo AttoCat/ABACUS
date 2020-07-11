@@ -17,11 +17,11 @@ class Event(commands.Cog):
         self.kakutyousi = (".jpg", ".jpeg", ".png")
 
     @commands.command()
-    async def devdm(self, ctx, *, naiyou):
+    async def devdm(self, ctx, *, content):
         embed = discord.Embed(
             title="メッセージが届きました！",
             description=(
-                f"{naiyou}\n送信者:{ctx.author}"),
+                f"{content}\n送信者:{ctx.author}"),
             color=0x4169e1)
         await self.dev.send(embed=embed)
         embed = discord.Embed(
