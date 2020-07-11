@@ -51,6 +51,30 @@ class Management(commands.Cog):
         await ctx.message.delete()
         await ctx.channel.send(embed=embed, delete_after=3)
 
+    @commands.command()
+    @commands.has_role(713321552271376444)
+    async def give(self, ctx, user: discord.Member, role: discord.Role):
+        await user.add_roles(role)
+        embed = discord.Embed(
+            title="Done.",
+            description=(
+                f"{user}に{role}を付与しました。\nGrant complete."),
+            color=0x4169e1)
+        await ctx.send(embed=embed)
+        await ctx.message.delete()
+
+    @commands.command()
+    @commands.has_role(713321552271376444)
+    async def remove(self, ctx, user: discord.Member, role: discord.Role):
+        await user.remove_roles(role)
+        embed = discord.Embed(
+            title="Done.",
+            description=(
+                f"{user}から{role}を剥奪しました。\nDeprivation complete."),
+            color=0x4169e1)
+        await ctx.send(embed=embed)
+        await ctx.message.delete()
+
     @commands.Cog.listener()  # メンションユーザー操作機能
     async def on_message(self, message):
         if message.author.bot:
@@ -227,50 +251,6 @@ class Management(commands.Cog):
                             await message.channel.purge(limit=None)
                         break
                     break
-
-    @commands.command()
-    @commands.has_role(713321552271376444)
-    async def give(self, ctx, user: typing.Union[discord.Member, str], roles: int):
-        if isinstance(user, str):
-            try:
-                member = discord.utils.get(
-                    self.guild.members, discriminator=user)
-                user = self.guild.get_member(member.id)
-                if user == None:
-                    raise commands.BadArgument()
-            except ValueError:
-                raise commands.BadArgument()
-        role = self.guild.get_role(roles)
-        await user.add_roles(role)
-        embed = discord.Embed(
-            title="Done.",
-            description=(
-                f"{user}に{role}を付与しました。\nGrant complete."),
-            color=0x4169e1)
-        await ctx.send(embed=embed)
-        await ctx.message.delete()
-
-    @commands.command()
-    @commands.has_role(713321552271376444)
-    async def remove(self, ctx, user: typing.Union[discord.Member, str], roles: int):
-        if isinstance(user, str):
-            try:
-                member = discord.utils.get(
-                    self.guild.members, discriminator=user)
-                user = self.guild.get_member(member.id)
-                if user == None:
-                    raise commands.BadArgument()
-            except ValueError:
-                raise commands.BadArgument()
-        role = self.guild.get_role(roles)
-        await user.remove_roles(role)
-        embed = discord.Embed(
-            title="Done.",
-            description=(
-                f"{user}から{role}を剥奪しました。\nDeprivation complete."),
-            color=0x4169e1)
-        await ctx.send(embed=embed)
-        await ctx.message.delete()
 
     async def cog_command_error(self, ctx, error):
         if isinstance(error, commands.MissingRole):
