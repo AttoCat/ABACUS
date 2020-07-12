@@ -16,7 +16,7 @@ EXTENSIONS = [
 
 
 def handler(signum, frame):
-    print("hogehogehogehogehogehogehogehoge")
+    print("hoge")
 
 
 signal.signal(signal.SIGTERM, handler)
