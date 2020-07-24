@@ -58,6 +58,8 @@ class Event(commands.Cog):
     async def on_member_join(self, member):
         if self.hiibot.status == discord.Status.online:
             return
+        if member.guild != self.guild:
+            return
         ch = self.guild.get_channel(711375652107976847)
         rule = self.guild.get_channel(711379195992997949)
         yaku = self.guild.get_channel(712410294496002090)
@@ -68,11 +70,14 @@ class Event(commands.Cog):
             title=(f"{member.display_name}さんが参加しました！"),
             description=naiyou,
             color=0x3aee67)
+        embed.set_thumbnail(url=member.avatar_url)
         await ch.send(embed=embed)
 
     @commands.Cog.listener()
     async def on_member_remove(self, member):
         if self.hiibot.status == discord.Status.online:
+            return
+        if member.guild != self.guild:
             return
         ch = self.guild.get_channel(711375652107976847)
         naiyou = (
