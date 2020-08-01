@@ -38,7 +38,9 @@ class Special(commands.Cog):
     def get_syntax_error(self, e):
         if e.text is None:
             return f'```py\n{e.__class__.__name__}: {e}\n```'
-        return f'```py\n{e.text}{"^":>{e.offset}}\n{e.__class__.__name__}: {e}```'
+        return f'```py\n{e.text}'
+        f'{"^":>{e.offset}}\n'
+        f'{e.__class__.__name__}: {e}```'
 
     @commands.command(pass_context=True, hidden=True, name='eval')  # 以下コピペ
     async def _eval(self, ctx):
@@ -57,7 +59,8 @@ class Special(commands.Cog):
         env.update(globals())
         await ctx.send('コマンドを入力してください')
         message = await self.client.wait_for(
-            'message', check=lambda m: m.author == ctx.author and m.channel == ctx.channel)
+            'message', check=lambda m: m.author == ctx.author
+            and m.channel == ctx.channel)
         body = self.cleanup_code(message.content)
         stdout = io.StringIO()
 
@@ -72,7 +75,7 @@ class Special(commands.Cog):
         try:
             with contextlib.redirect_stdout(stdout):
                 ret = await func()
-        except Exception as e:
+        except Exception:
             value = stdout.getvalue()
             await ctx.send(f'```py\n{value}{traceback.format_exc()}\n```')
         else:
@@ -91,6 +94,8 @@ class Special(commands.Cog):
 
     @commands.command()
     async def donate(self, ctx):
+        url = "https://www.amazon.co.jp/hz/wishlist"
+        "/ls/28QJULCB96QI8?ref_=wl_share"
         embed = discord.Embed(
             title="寄付はこちらから！",
             description=(
@@ -101,7 +106,7 @@ class Special(commands.Cog):
                 "  などなど、嬉しいことがいっぱいあります！\n\n"
                 "**寄付の方法...**\n"
                 "1.欲しいものリストから寄付\n"
-                " [欲しいものリスト](https://www.amazon.co.jp/hz/wishlist/ls/28QJULCB96QI8?ref_=wl_share)\n"
+                f" [欲しいものリスト]({url})\n"
                 "↑にはAttoCatが欲しいものが全て入っています！\n"
                 "2.AmazonギフトカードまたはKyashから寄付\n"
                 "AttoCat宛にDMでコード（Kyashの場合はリンク）を送ってください！"),
