@@ -15,6 +15,8 @@ class Event(commands.Cog):
         self.hiibot = self.guild.get_member(727164114513690688)
         self.log = self.guild.get_channel(715154878166466671)
         self.kakutyousi = (".jpg", ".jpeg", ".png")
+        status = discord.Game("ab!help")
+        await self.bot.change_presence(activity=status)
 
     @commands.command()
     async def devdm(self, ctx, *, content):
@@ -27,7 +29,7 @@ class Event(commands.Cog):
         embed = discord.Embed(
             title="Done.",
             description=(
-                f"正常に送信しました。\nMessage sent successfully. "),
+                "正常に送信しました。\nMessage sent successfully. "),
             color=0x4169e1)
         await ctx.channel.send(embed=embed, delete_after=10)
         await ctx.message.delete()
@@ -81,7 +83,8 @@ class Event(commands.Cog):
             return
         ch = self.guild.get_channel(711375652107976847)
         naiyou = (
-            f"{member.display_name}さん、BOTのすべてのご利用ありがとうございました。またのお越しをお待ちしております。")
+            f"{member.display_name}さん、BOTのすべてのご利用ありがとうございました。"
+            "またのお越しをお待ちしております。")
         embed = discord.Embed(
             title=(f"{member.display_name}さんが退出しました。\n"),
             description=naiyou,
@@ -93,17 +96,6 @@ class Event(commands.Cog):
     async def say(self, ctx, *, naiyou: str):
         await ctx.message.delete()
         await ctx.send(naiyou)
-
-    async def cog_command_error(self, ctx, error):
-        if isinstance(error, commands.NotOwner):
-            embed = discord.Embed(
-                title="Error",
-                description=(
-                    f"あなたにこのコマンドを実行する権限がありません！\nYou don't have permission."),
-                color=0xff0000)
-            await ctx.message.delete()
-            await ctx.channel.send(embed=embed, delete_after=10)
-            return
 
 
 def setup(bot):
