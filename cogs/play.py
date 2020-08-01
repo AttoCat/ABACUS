@@ -23,7 +23,7 @@ class Play(commands.Cog):
             checklist.append(check.discriminator)
         content = random.choice(checklist)
         embed = discord.Embed(
-            title=(f"抽選結果"),
+            title=("抽選結果"),
             description=f"今回選ばれたのは||{content}||番のユーザーです！",
             color=0x3aee67)
         await ctx.message.delete()
@@ -60,8 +60,8 @@ class Play(commands.Cog):
                 if not len(set(content)) == 1:
                     kekka = "はずれ！"
                     break
-        tousen = str(round(1/chance*100, 3)) + "%"
-        ooatari = str(round(float(tousen[:-1])/7, 3)) + "%"
+        tousen = str(round(1 / chance * 100, 3)) + "%"
+        ooatari = str(round(float(tousen[:-1]) / 7, 3)) + "%"
         if tousen == "0.0%":
             tousen = "限りなく低い"
         if ooatari == "0.0%":
@@ -69,8 +69,8 @@ class Play(commands.Cog):
         embed = discord.Embed(
             title="スロット結果",
             description=(
-                "|".join(content) +
-                f"\n{kekka}\n当選確率 = {tousen}\n大当たり率 = {ooatari}"),
+                "|".join(content)
+                + f"\n{kekka}\n当選確率 = {tousen}\n大当たり率 = {ooatari}"),
             color=0x3aee67)
         embed.set_footer(text=f"実行者：{ctx.author}")
         await ctx.send(embed=embed)
@@ -92,9 +92,8 @@ class Play(commands.Cog):
                 naiyou.append(tuika)
         msg = "\n".join(naiyou)
         embed = discord.Embed(
-            title="投票",
-            description=(
-                f"タイトル：{title}\n{msg}"),
+            title=title,
+            description=msg,
             color=0x3aee67)
         msg = await ctx.send(embed=embed)
         await ctx.message.delete()
@@ -103,15 +102,20 @@ class Play(commands.Cog):
             await msg.add_reaction(tuika)
 
     @commands.command()
+    async def choice(self, ctx, *args):
+        content = random.choice(args)
+        await ctx.send(content)
+
+    @commands.command()
     async def abacus(self, ctx):
-        total = psutil.virtual_memory().total/1000/1000/1000
-        use = psutil.virtual_memory().used/1000/1000/1000
-        kekka = round(use/total*100, 0)
-        content = int(kekka/5)
+        total = psutil.virtual_memory().total / 1000000000
+        use = psutil.virtual_memory().used / 1000000000
+        kekka = round(use / total * 100, 0)
+        content = int(kekka / 5)
         cpu = psutil.cpu_percent(interval=1)
-        content2 = int(cpu/5)
-        memorymeter = ("|" * content) + (" " * (20-content))
-        cpumeter = ("|" * content2) + (" " * (20-content2))
+        content2 = int(cpu / 5)
+        memorymeter = ("|" * content) + (" " * (20 - content))
+        cpumeter = ("|" * content2) + (" " * (20 - content2))
         embed = discord.Embed(
             title="使用状況",
             description=(
@@ -122,50 +126,9 @@ class Play(commands.Cog):
             color=0xff0000)
         await ctx.send(embed=embed)
 
-    async def cog_command_error(self, ctx, error):
-        if isinstance(error, commands.NotOwner):
-            embed = discord.Embed(
-                title="Error",
-                description=(
-                    f"あなたにこのコマンドを実行する権限がありません！\nYou don't have permission."),
-                color=0xff0000)
-            await ctx.message.delete()
-            await ctx.channel.send(embed=embed, delete_after=10)
-            return
-        elif isinstance(error, commands.BadArgument):
-            embed = discord.Embed(
-                title="Error",
-                description=(
-                    f"不正な引数です！\nInvalid argument passed."),
-                color=0xff0000)
-            await ctx.message.delete()
-            await ctx.channel.send(embed=embed, delete_after=10)
-            return
-        elif isinstance(error, commands.MissingRequiredArgument):
-            embed = discord.Embed(
-                title="Error",
-                description=f"想定しない引数が渡されました！\nInvalid input.",
-                color=0xff0000)
-            await ctx.message.delete()
-            await ctx.channel.send(embed=embed, delete_after=10)
-            return
-        elif isinstance(error, commands.TooManyArguments):
-            embed = discord.Embed(
-                title="Error",
-                description=f"引数の数が不正です！\nInvalid input.",
-                color=0xff0000)
-            await ctx.message.delete()
-            await ctx.channel.send(embed=embed, delete_after=10)
-            return
-        else:
-            embed = discord.Embed(
-                title="Error",
-                description=(
-                    f"不明なエラーが発生しました。\nエラー内容:\n{error}"),
-                color=0xff0000)
-            await ctx.message.delete()
-            await ctx.channel.send(embed=embed)
-            return
+    @commands.command()
+    async def fetch(self, ctx, arg: int):
+        _ = await ctx.channel.fetch_message(arg)
 
 
 def setup(bot):
