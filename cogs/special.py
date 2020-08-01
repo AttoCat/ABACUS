@@ -94,18 +94,40 @@ class Special(commands.Cog):
         embed = discord.Embed(
             title="寄付はこちらから！",
             description=(
-                f"\n**寄付をしていただけると…**\n"
-                f"1.AttoCatにものすごく感謝される\n"
-                f"2.ABACUSがより高性能になる\n"
-                f"3.要望を優先的にできる\n"
-                f"  などなど、嬉しいことがいっぱいあります！\n\n"
-                f"**寄付の方法...**\n"
-                f"1.欲しいものリストから寄付\n"
-                f" [欲しいものリスト](https://www.amazon.co.jp/hz/wishlist/ls/28QJULCB96QI8?ref_=wl_share)\n"
-                f"↑にはAttoCatが欲しいものが全て入っています！\n"
-                f"2.AmazonギフトカードまたはKyashから寄付\n"
-                f"AttoCat宛にDMでコード（Kyashの場合はリンク）を送ってください！"),
+                "\n**寄付をしていただけると…**\n"
+                "1.AttoCatにものすごく感謝される\n"
+                "2.ABACUSがより高性能になる\n"
+                "3.要望を優先的にできる\n"
+                "  などなど、嬉しいことがいっぱいあります！\n\n"
+                "**寄付の方法...**\n"
+                "1.欲しいものリストから寄付\n"
+                " [欲しいものリスト](https://www.amazon.co.jp/hz/wishlist/ls/28QJULCB96QI8?ref_=wl_share)\n"
+                "↑にはAttoCatが欲しいものが全て入っています！\n"
+                "2.AmazonギフトカードまたはKyashから寄付\n"
+                "AttoCat宛にDMでコード（Kyashの場合はリンク）を送ってください！"),
             color=0x4e37fb)
+        await ctx.send(embed=embed)
+
+    @commands.Cog.listener()
+    async def on_command_error(self, ctx, error):
+        if isinstance(error, commands.NotOwner):
+            content = "あなたにこのコマンドを実行する権限がありません！\nYou don't have permission."
+        elif isinstance(error, commands.BadArgument):
+            content = "不正な引数です！\nInvalid argument passed."
+        elif isinstance(error, commands.MissingRequiredArgument):
+            content = "想定しない引数が渡されました！\nInvalid input."
+        elif isinstance(error, commands.CommandInvokeError):
+            if isinstance(error.original, discord.NotFound):
+                content = "メッセージが見つかりませんでした！\nMessage not found."
+            else:
+                f"不明なエラーが発生しました。\nエラー内容：\n{error}"
+        elif isinstance(error, commands.TooManyArguments):
+            content = "引数の数が不正です！\nInvalid input."
+        else:
+            content = f"不明なエラーが発生しました。\nエラー内容:\n{error}"
+        embed = discord.Embed(
+            title="Error", description=content, color=0xff0000)
+        await ctx.message.delete()
         await ctx.send(embed=embed)
 
 

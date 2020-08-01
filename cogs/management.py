@@ -46,7 +46,7 @@ class Management(commands.Cog):
         embed = discord.Embed(
             title="Done.",
             description=(
-                f"削除成功。\nDeletion successful."),
+                "削除成功。\nDeletion successful."),
             color=0x4169e1)
         await ctx.message.delete()
         await ctx.channel.send(embed=embed, delete_after=3)
@@ -176,18 +176,25 @@ class Management(commands.Cog):
                     msg = str(reaction.emoji)
                     return _user == message.author and msg in bangou
 
+                def check2(m):
+                    lower = m.content.lower()
+                    return m.author == message.author and lower in ["ok", "no"]
+
                 while True:
                     content = [
                         "キック", "BAN", "制限付きに",
                         "注意役職を付与", "警告役職を付与", "注意系役職全解除"
                     ]
                     try:
-                        reaction, _user = await self.bot.wait_for("reaction_add", timeout=60.0, check=check)
+                        reaction, _user = await self.bot.wait_for(
+                            "reaction_add",
+                            timeout=60.0,
+                            check=check)
                     except asyncio.TimeoutError:
                         embed = discord.Embed(
                             title="Timeout",
                             description=(
-                                f"時間切れです。ログは10秒後に自動で削除されます。"),
+                                "時間切れです。ログは10秒後に自動で削除されます。"),
                             color=0xff0000)
                         await message.channel.send(embed=embed)
                         await asyncio.sleep(10)
@@ -210,7 +217,7 @@ class Management(commands.Cog):
                             embed = discord.Embed(
                                 title="Cancel",
                                 description=(
-                                    f"操作をキャンセルしました。ログは10秒後に自動で削除されます。"),
+                                    "操作をキャンセルしました。ログは10秒後に自動で削除されます。"),
                                 color=0xff0000)
                             await message.channel.send(embed=embed)
                             await asyncio.sleep(10)
@@ -219,13 +226,19 @@ class Management(commands.Cog):
                         embed = discord.Embed(
                             title="最終確認",
                             description=(
-                                f"{member}に対して{content[number]} を行います。よろしいですか？\n実行する場合はOK、キャンセルする場合はNOと発言してください！"),
+                                f"{member}に対して{content[number]} を行います。"
+                                "よろしいですか？\n"
+                                "実行する場合はOK、キャンセルする場合はNOと発言してください！"),
                             color=0xff0000)
-                        await message.channel.send(embed=embed, delete_after=50)
+                        await message.channel.send(
+                            embed=embed,
+                            delete_after=50
+                        )
                         try:
                             ok_no = await self.bot.wait_for(
-                                'message', timeout=20.0,
-                                check=lambda m: m.author == message.author and m.content.lower() in ["ok", "no"])
+                                'message',
+                                timeout=20.0,
+                                check=check2)
                         except asyncio.TimeoutError:
                             await message.channel.send("時間切れです")
                             break
@@ -234,9 +247,14 @@ class Management(commands.Cog):
                             embed = discord.Embed(
                                 title="Done.",
                                 description=(
-                                    f"実行が完了しました。ログは10秒後に自動で削除されます。\nExecution complete."),
+                                    "実行が完了しました。ログは10秒後に自動で削除されます。\n"
+                                    "Execution complete."
+                                ),
                                 color=0x4169e1)
-                            await message.channel.send(embed=embed, delete_after=20)
+                            await message.channel.send(
+                                embed=embed,
+                                delete_after=20
+                            )
                             await asyncio.sleep(10)
                             await message.channel.purge(limit=None)
                             return
@@ -244,42 +262,13 @@ class Management(commands.Cog):
                             embed = discord.Embed(
                                 title="Cancel",
                                 description=(
-                                    f"操作をキャンセルしました。ログは10秒後に自動で削除されます。"),
+                                    "操作をキャンセルしました。ログは10秒後に自動で削除されます。"),
                                 color=0xff0000)
                             await message.channel.send(embed=embed)
                             await asyncio.sleep(10)
                             await message.channel.purge(limit=None)
                         break
                     break
-
-    async def cog_command_error(self, ctx, error):
-        if isinstance(error, commands.MissingRole):
-            embed = discord.Embed(
-                title="Error",
-                description=(
-                    f"あなたにこのコマンドを実行する権限がありません！\nYou don't have permission."),
-                color=0xff0000)
-            await ctx.message.delete()
-            await ctx.channel.send(embed=embed, delete_after=10)
-            return
-        elif isinstance(error, commands.BadArgument):
-            embed = discord.Embed(
-                title="Error",
-                description=(
-                    f"不正な引数です！\nInvalid argument passed."),
-                color=0xff0000)
-            await ctx.message.delete()
-            await ctx.channel.send(embed=embed, delete_after=10)
-            return
-        else:
-            embed = discord.Embed(
-                title="Error",
-                description=(
-                    f"不明なエラーが発生しました。\nエラー内容:{error}"),
-                color=0xff0000)
-            await ctx.message.delete()
-            await ctx.channel.send(embed=embed)
-            return
 
 
 def setup(bot):

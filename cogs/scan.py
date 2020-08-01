@@ -45,13 +45,14 @@ class Scan(commands.Cog):
         await message.delete()
         embed = discord.Embed(
             title="Message deleted",
-            description=f"NGワードが含まれていたため、削除しました。",
+            description="NGワードが含まれていたため、削除しました。",
             color=0xff0000)
         kensyutu = discord.Embed(
             title="NGワードを検出",
             description=f"送信者: {str(message.author)}\n内容:{message.content}",
             color=0xff0000)
-        await message.guild.get_channel(715142539535056907).send(embed=kensyutu)
+        await message.guild.get_channel(715142539535056907)\
+            .send(embed=kensyutu)
         if tyuui in member.roles:  # 注意がある場合は警告に変更
             await member.add_roles(keikoku)
             await member.remove_roles(tyuui)
@@ -78,7 +79,8 @@ class Scan(commands.Cog):
         id = strage.last_message_id
         msg = await strage.fetch_message(id)
         await msg.attachments[0].save("allbot.json")
-        async with aiofiles.open('allbot.json', 'r') as ng:  # jsonファイルから暴言リストを読み込み
+        # jsonファイルから暴言リストを読み込み
+        async with aiofiles.open('allbot.json', 'r') as ng:
             data = await ng.read()
         scanlist = json.loads(data)
         self.scan = scanlist['henkoulist']
@@ -113,7 +115,7 @@ class Scan(commands.Cog):
         embed = discord.Embed(
             title="Done.",
             description=(
-                f"暴言リストに要素を追加しました。\nAdd complete."),
+                "暴言リストに要素を追加しました。\nAdd complete."),
             color=0x4169e1)
         await ctx.send(embed=embed)
         await self.write_json()
@@ -128,7 +130,7 @@ class Scan(commands.Cog):
         embed = discord.Embed(
             title="Done.",
             description=(
-                f"暴言リストから要素を削除しました。\nRemove complete."),
+                "暴言リストから要素を削除しました。\nRemove complete."),
             color=0x4169e1)
         await ctx.send(embed=embed)
         await self.write_json()
@@ -184,7 +186,9 @@ class Scan(commands.Cog):
         embed = discord.Embed(
             title="Done.",
             description=(
-                f"ユーザー辞書に要素を追加しました。\n現在のユーザー辞書は ab!dictprint で確認できます。\nAdd complete."),
+                "ユーザー辞書に要素を追加しました。\n"
+                "n現在のユーザー辞書は ab!dictprint で確認できます。\n"
+                "Add complete."),
             color=0x4169e1)
         await ctx.message.delete()
         await self.reload_csv()
@@ -198,7 +202,9 @@ class Scan(commands.Cog):
         embed = discord.Embed(
             title="Done.",
             description=(
-                f"ユーザー辞書から要素を削除しました。\n現在のユーザー辞書は ab!dict print で確認できます。\nDelete complete."),
+                "ユーザー辞書から要素を削除しました。\n"
+                "現在のユーザー辞書は ab!dict print で確認できます。\n"
+                "Delete complete."),
             color=0x4169e1)
         await ctx.channel.send(embed=embed, delete_after=10)
         await self.reload_csv()
@@ -215,61 +221,6 @@ class Scan(commands.Cog):
         await ctx.channel.send(embed=embed, delete_after=20)
         await self.reload_csv()
         await ctx.message.delete()
-
-    async def cog_command_error(self, ctx, error):
-        if isinstance(error, commands.MissingRole):
-            embed = discord.Embed(
-                title="Error",
-                description=(
-                    f"あなたにこのコマンドを実行する権限がありません！\nYou don't have permission."),
-                color=0xff0000)
-            await ctx.message.delete()
-            await ctx.channel.send(embed=embed, delete_after=10)
-            return
-        elif isinstance(error, commands.MissingRequiredArgument):
-            embed = discord.Embed(
-                title="Error",
-                description=f"引数の数が不正です！\nInvalid input.",
-                color=0xff0000)
-            await ctx.message.delete()
-            await ctx.channel.send(embed=embed, delete_after=10)
-            return
-        elif isinstance(error, commands.BadArgument):
-            embed = discord.Embed(
-                title="Error",
-                description=(
-                    f"不正な引数です！\nInvalid argument passed."),
-                color=0xff0000)
-            await ctx.message.delete()
-            await ctx.channel.send(embed=embed, delete_after=10)
-            return
-        elif isinstance(error, commands.NotOwner):
-            embed = discord.Embed(
-                title="Error",
-                description=(
-                    f"このコマンドは開発者のみ実行できます。\nCan only be executed by the creator."),
-                color=0xff0000)
-            await ctx.message.delete()
-            await ctx.channel.send(embed=embed, delete_after=10)
-            return
-        elif isinstance(error, commands.TooManyArguments):
-            embed = discord.Embed(
-                title="Error",
-                description=(
-                    f"引数の数が不正です！\nCan only be executed by the creator."),
-                color=0xff0000)
-            await ctx.message.delete()
-            await ctx.channel.send(embed=embed, delete_after=10)
-            return
-        else:
-            embed = discord.Embed(
-                title="Error",
-                description=(
-                    f"不明なエラーが発生しました。\nエラー内容:{error}"),
-                color=0xff0000)
-            await ctx.message.delete()
-            await ctx.channel.send(embed=embed)
-            return
 
 
 def setup(bot):
