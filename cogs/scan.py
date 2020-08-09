@@ -20,50 +20,68 @@ class Scan(commands.Cog):
         self.system = self.bot.get_guild(682218950268157982)
         self.log1 = self.system.get_channel(726329141540159568)
         self.log2 = self.system.get_channel(726329157948145696)
+        self.cat_log = self.system.get_channel(741916689993826345)
+        self.auto_manage = discord.Embed(
+            title="Automatic management",
+            description="**Type**: {0}\n"
+            "**Author**: {1}\n"
+            "**Author ID**: {2}\n"
+            "**Content**: {3}\n"
+            "**Place**: {4}  >> {5}\n"
+            "**Place ID**: {6} >> {7} \n",
+            color=0xff0000)
+        self.manage_dict = discord.Embed.to_dict(self.auto_manage)
         await self.load_json()
         await self.load_csv()
         await self.reload_csv()
 
+    async def role_change(self, author):
+        print(author)
+        print(author.guild)
+        normal = author.guild.get_role(
+            711375295172706313)  # ノーマルメンバー役職
+        tyuui = author.guild.get_role(715809531829157938)  # 「注意」役職
+        keikoku = author.guild.get_role(715809422148108298)  # 「警告」役職
+        seigen = author.guild.get_role(714733639505543222)  # 「制限」役職
+        if tyuui in author.roles:  # 注意がある場合は警告に変更
+            await author.add_roles(keikoku)
+            await author.remove_roles(tyuui)
+        elif keikoku in author.roles:  # 警告がある場合は制限付きに
+            await author.remove_roles(normal)
+            await author.add_roles(seigen)
+            await author.remove_roles(keikoku)
+        else:  # 何も持っていなければ注意を
+            await author.add_roles(tyuui)
+
     @commands.Cog.listener()
     async def on_message(self, message):
         member = message.author
-        if member.bot:
+        if (member.bot
+            or message.content.startswith("ab!")
+                or message.channel.is_nsfw()):
             return
-        elif message.content.startswith("ab!"):
-            return
-        moji = message.content
-        kekka = self.t.tokenize(moji, wakati=True)
+        kekka = self.t.tokenize(message.content, wakati=True)
         if not any((word in self.scan) for word in kekka):
             return
-        if message.channel == self.nsfw:
-            return
-        normal = message.guild.get_role(
-            711375295172706313)  # ノーマルメンバー役職
-        tyuui = message.guild.get_role(715809531829157938)  # 「注意」役職
-        keikoku = message.guild.get_role(715809422148108298)  # 「警告」役職
-        seigen = message.guild.get_role(714733639505543222)  # 「制限」役職
-        await message.delete()
         embed = discord.Embed(
             title="Message deleted",
             description="NGワードが含まれていたため、削除しました。",
             color=0xff0000)
-        kensyutu = discord.Embed(
-            title="NGワードを検出",
-            description=f"送信者: {str(message.author)}\n内容:{message.content}",
-            color=0xff0000)
-        await message.guild.get_channel(715142539535056907)\
-            .send(embed=kensyutu)
-        if tyuui in member.roles:  # 注意がある場合は警告に変更
-            await member.add_roles(keikoku)
-            await member.remove_roles(tyuui)
-        elif keikoku in member.roles:  # 警告がある場合は制限付きに
-            await member.remove_roles(normal)
-            await member.add_roles(seigen)
-            await member.remove_roles(keikoku)
-        else:  # 何も持っていなければ注意を
-            await member.add_roles(tyuui)
-        await message.channel.send(
-            embed=embed)
+        await message.channel.send(embed=embed)
+        if message.guild != self.guild:
+            channel = self.cat_log
+        else:
+            channel = member.guild.get_channel(715142539535056907)
+            await self.role_change(member)
+        embed_dict = self.manage_dict.copy()
+        embed_dict["description"] = embed_dict["description"].format(
+            "Rant", str(member),
+            member.id, message.content,
+            message.guild.name, message.channel.name,
+            message.guild.id, message.channel.id)
+        embed = discord.Embed.from_dict(embed_dict)
+        await channel.send(embed=embed)
+        await message.delete()
         return
 
     async def write_json(self):
