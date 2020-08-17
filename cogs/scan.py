@@ -21,23 +21,11 @@ class Scan(commands.Cog):
         self.log1 = self.system.get_channel(726329141540159568)
         self.log2 = self.system.get_channel(726329157948145696)
         self.cat_log = self.system.get_channel(741916689993826345)
-        self.auto_manage = discord.Embed(
-            title="Automatic management",
-            description="**Type**: {0}\n"
-            "**Author**: {1}\n"
-            "**Author ID**: {2}\n"
-            "**Content**: {3}\n"
-            "**Place**: {4}  >> {5}\n"
-            "**Place ID**: {6} >> {7} \n",
-            color=0xff0000)
-        self.manage_dict = discord.Embed.to_dict(self.auto_manage)
         await self.load_json()
         await self.load_csv()
         await self.reload_csv()
 
     async def role_change(self, author):
-        print(author)
-        print(author.guild)
         normal = author.guild.get_role(
             711375295172706313)  # ノーマルメンバー役職
         tyuui = author.guild.get_role(715809531829157938)  # 「注意」役職
@@ -69,18 +57,26 @@ class Scan(commands.Cog):
             color=0xff0000)
         await message.channel.send(embed=embed)
         if message.guild != self.guild:
-            channel = self.cat_log
+            is_ab = False
         else:
             channel = member.guild.get_channel(715142539535056907)
+            is_ab = True
             await self.role_change(member)
-        embed_dict = self.manage_dict.copy()
-        embed_dict["description"] = embed_dict["description"].format(
-            "Rant", str(member),
-            member.id, message.content,
-            message.guild.name, message.channel.name,
-            message.guild.id, message.channel.id)
-        embed = discord.Embed.from_dict(embed_dict)
-        await channel.send(embed=embed)
+        description = (
+            "**Type**: NGword\n"
+            "**Author**: {0.author}\n"
+            "**Author ID**: {0.author.id}\n"
+            "**Content**: {0.content}\n"
+            "**Place**: {0.guild.name}  >>  {0.channel.name}\n"
+            "**Place ID**: {0.guild.id}  >>  {0.channel.id} \n").format(
+            message)
+        embed = discord.Embed(
+            title="Automatic Management",
+            description=description,
+            color=0xff0000)
+        await self.cat_log.send(embed=embed)
+        if is_ab:
+            await channel.send(embed=embed)
         await message.delete()
         return
 
