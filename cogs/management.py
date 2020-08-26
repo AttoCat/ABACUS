@@ -79,98 +79,76 @@ class Management(commands.Cog):
     async def on_message(self, message):
         if message.author.bot:
             return
-        members = message.guild.members
-        if message.channel != self.userch:
-            return
-        getlist = []
         try:
-            get = self.guild.get_member(int(message.content))
-            if get is None:
-                await message.delete()
-                return
-            getlist.append(get)
-        except ValueError:
-            getlist = message.mentions
-        if len(getlist) >= 2:
-            await message.channel.send("複数のメンションは使用できません！")
-            await message.delete()
-            await asyncio.sleep(10)
-            await message.channel.purge(limit=None)
-            return
-        elif len(getlist) == 0:
+            member = await commands.MemberConverter().convert(await self.bot.get_context(message), message.content)
+        except commands.errors.BadArgument:
             await message.delete()
             return
-        elif getlist[0] == message.author:
-            await message.channel.send("自身に対して変更を加えることは出来ません！")
-            await message.delete()
-            await asyncio.sleep(10)
-            await message.channel.purge(limit=None)
-            return
-        elif self.unei in getlist[0].roles:
-            await message.channel.send("運営またはABACUSに対して変更を加えることは出来ません！")
-            await message.delete()
-            await asyncio.sleep(10)
-            await message.channel.purge(limit=None)
-            return
-        for member in members:
-            if member in getlist:
-                bangou = []
-                emoji = [
-                    ":regional_indicator_a:",
-                    ":regional_indicator_b:",
-                    ":regional_indicator_c:",
-                    ":regional_indicator_d:",
-                    ":regional_indicator_e:",
-                    ":regional_indicator_f:"]
-                embed = discord.Embed(
-                    title="ユーザー操作",
-                    description=(
-                        f"{member}に対して変更を加えます。"),
-                    color=0xff0000)
-                embed.add_field(name=f"{emoji[0]}:キック",
-                                value="ユーザーをキックします。", inline=False)
-                embed.add_field(name=f"{emoji[1]}:BAN",
-                                value="ユーザーをBANします。", inline=False)
-                embed.add_field(name=f"{emoji[2]}:制限付き",
-                                value="ユーザーを制限付きにします。", inline=False)
-                embed.add_field(name=f"{emoji[3]}:注意",
-                                value="ユーザーに注意役職を付与します。", inline=False)
-                embed.add_field(name=f"{emoji[4]}:警告",
-                                value="ユーザーに警告役職を付与します。", inline=False)
-                embed.add_field(name=f"{emoji[5]}:解除",
-                                value="ユーザーの注意等を全て解除します。", inline=False)
-                msg = await message.channel.send(embed=embed, delete_after=100)
-                for num in range(6):
-                    tuika = chr((0x0001f1e6 + num))
-                    await msg.add_reaction(tuika)
-                    bangou.append(str(tuika))
-                await msg.add_reaction("❌")
-                bangou.append(str("❌"))
+        embed = discord.Embed(
+            title="Operation Panel",
+            description=f"{str(member)}に変更を加えます。\nMake changes to {str(member)}.",
+            color=0xff0000
+        )
+        emojis = []
+        datum = {
+            "Kick": "をキック", "BAN": "をBAN",
+            "To Limit": "を制限付きに", "To Caution": "に注意役職を付与", "To Warning": "に警告役職を付与",
+            "Lift Admonition": "の注意系役職を全解除"
+        }
+        panel = await message.channel.send(embed=embed)
+        for num, data in enumerate(datum):
+            emoji = chr(0x0001f1e6 + num)
+            embed.add_field(
+                name=f"{emoji}:{data}",
+                value=f"ユーザー{datum[data]}します。", inline=False
+            )
+            await panel.add_reaction(emoji)
+            emojis.append(emoji)
+        await panel.add_reaction("❌")
+        await panel.edit(embed=embed)
 
-                async def sousa(sousa):
-                    if sousa == 0:
-                        await self.guild.kick(member)
-                        return
-                    elif sousa == 1:
-                        await self.guild.ban(member)
-                        return
-                    elif sousa == 2:
-                        await member.add_roles(self.seigen)
-                        return
-                    elif sousa == 3:
-                        await member.add_roles(self.tyuui)
-                        return
-                    elif sousa == 4:
-                        await member.add_roles(self.keikoku)
-                        return
-                    elif sousa == 5:
-                        if self.tyuui in member.roles:
-                            await member.remove_roles(self.tyuui)
-                        elif self.keikoku in member.roles:
-                            await member.remove_roles(self.keikoku)
-                        else:
-                            await member.remove_roles(self.seigen)
-                            await member.add_roles(self.normal)
+        def check(reaction, user):
+            return user == message.author and str(reaction.emoji) in emojis
+        try:
+            reaction, user = await self.bot.wait_for(
+                "reaction_add",
+                timeout=60.0,
+                check=check)
+        except asyncio.TimeoutError:
+            embed = discord.Embed(
+                title="Timeout",
+                description=(
+                    "時間切れです。"),
+                color=0xff0000)
+            return
+        else:
+            number = emojis.index(str(reaction.emoji))
+            print(number)
+
+            async def sousa(sousa):
+                if sousa == 0:
+                    await self.guild.kick(member)
+                    return
+                elif sousa == 1:
+                    await self.guild.ban(member)
+                    return
+                elif sousa == 2:
+                    await member.add_roles(self.seigen)
+                    return
+                elif sousa == 3:
+                    await member.add_roles(self.tyuui)
+                    return
+                elif sousa == 4:
+                    await member.add_roles(self.keikoku)
+                    return
+                elif sousa == 5:
+                    if self.tyuui in member.roles:
+                        await member.remove_roles(self.tyuui)
+                    elif self.keikoku in member.roles:
+                        await member.remove_roles(self.keikoku)
+                    else:
+                        await member.remove_roles(self.seigen)
+                        await member.add_roles(self.normal)
 
                 def check(reaction, _user):
                     msg = str(reaction.emoji)
