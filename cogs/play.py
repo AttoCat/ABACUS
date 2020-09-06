@@ -12,16 +12,10 @@ class Play(commands.Cog):
 
     @commands.command(aliases=["mr"])
     @commands.is_owner()
-    async def memberandom(self, ctx):
-        checklist = []
-        guild = self.bot.get_guild(711374787892740148)
-        bots = guild.get_role(711377288272412723)
-        member = guild.members
-        for check in member:
-            if bots in check.roles:
-                continue
-            checklist.append(check.discriminator)
-        content = random.choice(checklist)
+    async def member_random(self, ctx):
+        members = [
+            member.discriminator for member in ctx.guild.members if not member.bot]
+        content = random.choice(members)
         embed = discord.Embed(
             title=("抽選結果"),
             description=f"今回選ばれたのは||{content}||番のユーザーです！",
@@ -36,9 +30,8 @@ class Play(commands.Cog):
         member = discord.utils.get(guild.members, discriminator=dis)
         if member is None:
             raise commands.BadArgument()
-        else:
-            await ctx.message.delete()
-            await ctx.send(str(member))
+        await ctx.message.delete()
+        await ctx.send(str(member))
 
     @commands.command()
     async def slot(self, ctx, chance: int = 343):
