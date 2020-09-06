@@ -75,60 +75,50 @@ class Play(commands.Cog):
         embed.set_footer(text=f"実行者：{ctx.author}")
         await ctx.send(embed=embed)
 
-    @commands.command()
-    async def touhyou(self, ctx, title, *args):
-        if len(args) >= 21:
+    @commands.command(aliases=["touhyou"])
+    async def poll(self, ctx, title, *choices):
+        if len(choices) >= 21:
             raise commands.TooManyArguments()
         emoji = 0x0001f1e6  # 絵文字定数（A）
         num = 0
-        naiyou = []
-        if len(args) == 0:
-            naiyou.append(chr(emoji) + "：そう思う")
-            naiyou.append(chr(emoji + 1) + "：そう思わない")
-        else:
-            for content in args:
-                tuika = chr(emoji + num) + "：" + str(content)
-                num += 1
-                naiyou.append(tuika)
-        msg = "\n".join(naiyou)
+        emojis = []
+        content = ""
+        if len(choices) == 0:
+            choices = ["そう思う", "そう思わない"]
+        for num, choice in enumerate(choices):
+            reaction = chr(emoji + num)
+            content += f"{reaction}：{choice}\n"
+            emojis.append(reaction)
         embed = discord.Embed(
             title=title,
-            description=msg,
+            description=content,
             color=0x3aee67)
         msg = await ctx.send(embed=embed)
         await ctx.message.delete()
-        for num in range(len(naiyou)):
-            tuika = chr((emoji + num))
-            await msg.add_reaction(tuika)
+        [await msg.add_reaction(e) for e in emojis]
 
     @commands.command()
-    async def choice(self, ctx, *args):
-        content = random.choice(args)
+    async def choice(self, ctx, *choices):
+        content = random.choice(choices)
         await ctx.send(content)
 
     @commands.command()
-    async def abacus(self, ctx):
+    async def used(self, ctx):
         total = psutil.virtual_memory().total / 1000000000
         use = psutil.virtual_memory().used / 1000000000
-        kekka = round(use / total * 100, 0)
-        content = int(kekka / 5)
+        memory = round(use / total * 100, 0)
         cpu = psutil.cpu_percent(interval=1)
-        content2 = int(cpu / 5)
-        memorymeter = ("|" * content) + (" " * (20 - content))
-        cpumeter = ("|" * content2) + (" " * (20 - content2))
+        memory_meter = ("#" * int(memory / 5)).ljust(20)
+        cpu_meter = ("#" * int(cpu / 5)).ljust(20)
         embed = discord.Embed(
             title="使用状況",
             description=(
-                f"Memory...{round(use, 1)}GB/{round(total, 1)}GB {kekka}%\n"
-                f"`[{memorymeter}]`\n"
+                f"Memory...{round(use, 1)}GB/{round(total, 1)}GB {memory}%\n"
+                f"`|{memory_meter}|`\n\n"
                 f"CPU...{cpu}%\n"
-                f"`[{cpumeter}]`"),
-            color=0xff0000)
+                f"`|{cpu_meter}|`"),
+            color=0)
         await ctx.send(embed=embed)
-
-    @commands.command()
-    async def fetch(self, ctx, arg: int):
-        _ = await ctx.channel.fetch_message(arg)
 
 
 def setup(bot):
