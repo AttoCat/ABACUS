@@ -61,7 +61,7 @@ class Hiikun(commands.Bot):
             if isinstance(error.original, discord.NotFound):
                 content = "メッセージが見つかりませんでした！\nMessage not found."
             else:
-                f"不明なエラーが発生しました。\nエラー内容：\n{error}"
+                content = f"不明なエラーが発生しました。\nエラー内容：\n{error}"
         elif isinstance(error, commands.TooManyArguments):
             content = "引数の数が不正です！\nInvalid input."
         else:
