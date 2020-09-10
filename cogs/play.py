@@ -3,6 +3,7 @@ import psutil
 from decimal import Decimal, ROUND_HALF_UP, ROUND_HALF_EVEN
 import discord
 from discord.ext import commands
+import asyncpg
 
 
 class Play(commands.Cog):
@@ -112,6 +113,45 @@ class Play(commands.Cog):
                 f"`|{cpu_meter}|`"),
             color=0)
         await ctx.send(embed=embed)
+
+    @commands.command()
+    async def tag(self, ctx, text: str):
+        member = await self.bot.conn.fetchrow(
+            """
+            SELECT *
+                FROM member_tags
+                WHERE id = $1;
+            """, ctx.author.id
+        )
+        if not member:
+            await self.bot.conn.execute(
+                """
+                INSERT INTO member_tags VALUES ($1,$2);
+                """,
+                ctx.author.id, text
+            )
+            return
+        await self.bot.conn.execute(
+            """
+            UPDATE member_tags
+                SET text=$1
+            WHERE id = $2;
+            """,
+            text, ctx.author.id)
+
+    @commands.command()
+    async def me(self, ctx):
+        member = await self.bot.conn.fetchrow(
+            """
+            SELECT *
+                FROM member_tags
+                WHERE id = $1;
+            """, ctx.author.id
+        )
+        if not member:
+            await ctx.send("あなたのタグはありません！")
+            return
+        await ctx.send(f"あなたのタグは {member['text']}です！")
 
 
 def setup(bot):
