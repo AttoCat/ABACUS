@@ -1,22 +1,26 @@
-import os
-import signal
-import dotenv
 import asyncio
+import asyncpg
 import discord
 from discord.ext import commands
+import dotenv
+import os
+import signal
+import ssl
 import traceback
 
 dotenv.load_dotenv()
 
 TOKEN = os.getenv("TOKEN")
 PREFIX = os.getenv("PREFIX")
+DATABASE_URL = os.getenv("DATABASE_URL")
 EXTENSIONS = [
     "cogs.scan", "cogs.management",
     "cogs.play", "cogs.event", "cogs.special"]
 
 
 def handler(signum, frame):
-    print("hoge")
+    print("シグナルをスルー")  # test
+    return
 
 
 signal.signal(signal.SIGTERM, handler)
@@ -33,8 +37,18 @@ class Hiikun(commands.Bot):
             except Exception:
                 traceback.print_exc()
 
+    async def setup(self):
+        try:
+            context = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
+            bot.conn = await asyncpg.connect(DATABASE_URL, ssl=context)
+        except Exception as e:
+            print(e)
+            print(e.__class__)
+            return
+
     async def on_ready(self):
         print(f"Bot is ready! \nlibrary version:{discord.__version__}")
+        await self.setup()
 
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.NotOwner):
