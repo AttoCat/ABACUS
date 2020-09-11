@@ -15,7 +15,7 @@ PREFIX = os.getenv("PREFIX")
 DATABASE_URL = os.getenv("DATABASE_URL")
 EXTENSIONS = [
     "cogs.scan", "cogs.management",
-    "cogs.play", "cogs.event", "cogs.special"]
+    "cogs.play", "cogs.event", "cogs.special", "cogs.database"]
 
 
 def handler(signum, frame):
