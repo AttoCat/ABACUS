@@ -114,47 +114,6 @@ class Play(commands.Cog):
             color=0)
         await ctx.send(embed=embed)
 
-    @commands.command()
-    async def tag(self, ctx, *, text: str):
-        user = await self.bot.conn.fetchrow(
-            """
-            SELECT *
-                FROM users
-                WHERE id = $1;
-            """, ctx.author.id
-        )
-        if not user:
-            await self.bot.conn.execute(
-                """
-                INSERT INTO users VALUES ($1,$2);
-                """,
-                ctx.author.id, text
-            )
-            await ctx.send("タグを登録しました！")
-            return
-        await self.bot.conn.execute(
-            """
-            UPDATE users
-                SET tag=$1
-            WHERE id = $2;
-            """,
-            text, ctx.author.id)
-        await ctx.send("タグを上書きしました！")
-
-    @commands.command()
-    async def me(self, ctx):
-        user = await self.bot.conn.fetchrow(
-            """
-            SELECT *
-                FROM users
-                WHERE id = $1;
-            """, ctx.author.id
-        )
-        if not user:
-            await ctx.send("あなたのタグはありません！")
-            return
-        await ctx.send(f"あなたのタグは {user['tag']} です！")
-
 
 def setup(bot):
     bot.add_cog(Play(bot))
