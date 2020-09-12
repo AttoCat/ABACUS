@@ -102,8 +102,8 @@ class Play(commands.Cog):
         use = psutil.virtual_memory().used / 1000000000
         memory = round(use / total * 100, 0)
         cpu = psutil.cpu_percent(interval=1)
-        memory_meter = ("#" * int(memory / 5)).ljust(20)
-        cpu_meter = ("#" * int(cpu / 5)).ljust(20)
+        memory_meter = ("#" * int(memory / 5)).ljust(20, ".")
+        cpu_meter = ("#" * int(cpu / 5)).ljust(20, ".")
         embed = discord.Embed(
             title="使用状況",
             description=(
