@@ -39,6 +39,8 @@ class Abacus(commands.Bot):
     async def on_ready(self):
         print(f"Bot is ready! \nlibrary version:{discord.__version__}")
         await self.setup()
+        channel = bot.get_channel(706779308211044352)
+        await channel.send("起動しました")
 
     async def on_command_error(self, ctx, error):
         content = None
