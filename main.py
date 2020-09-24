@@ -33,10 +33,8 @@ class Abacus(commands.Bot):
         try:
             context = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
             bot.conn = await asyncpg.connect(DATABASE_URL, ssl=context)
-        except Exception as e:
-            print(e)
-            print(e.__class__)
-            return
+        except Exception:
+            raise
 
     async def on_ready(self):
         print(f"Bot is ready! \nlibrary version:{discord.__version__}")
