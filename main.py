@@ -51,20 +51,23 @@ class Hiikun(commands.Bot):
         await self.setup()
 
     async def on_command_error(self, ctx, error):
+        content = None
+        if isinstance(error, commands.CommandInvokeError):
+            error = error.original
         if isinstance(error, commands.NotOwner):
             content = "あなたにこのコマンドを実行する権限がありません！\nYou don't have permission."
         elif isinstance(error, commands.BadArgument):
             content = "不正な引数です！\nInvalid argument passed."
         elif isinstance(error, commands.MissingRequiredArgument):
             content = "想定しない引数が渡されました！\nInvalid input."
-        elif isinstance(error, commands.CommandInvokeError):
-            if isinstance(error.original, discord.NotFound):
-                content = "メッセージが見つかりませんでした！\nMessage not found."
-            else:
-                content = f"不明なエラーが発生しました。\nエラー内容：\n{error}"
         elif isinstance(error, commands.TooManyArguments):
             content = "引数の数が不正です！\nInvalid input."
-        else:
+        elif isinstance(error, discord.HTTPException):
+            if error.code == 10008:
+                content = "メッセージが見つかりませんでした。"
+            elif error.code == 10014:
+                content = "絵文字が見つかりませんでした。"
+        if content is None:
             content = f"不明なエラーが発生しました。\nエラー内容:\n{error}"
         embed = discord.Embed(
             title="Error", description=content, color=0xff0000)
