@@ -65,6 +65,16 @@ class Database(commands.Cog):
             return
         await ctx.send(f"あなたのタグは {user['tag']} です！")
 
+    @commands.group(alias=["server", "g", "s"])
+    async def guild(self, ctx):
+        if ctx.invoked_subcommand is None:
+            await ctx.send('このコマンドにはサブコマンドが必要です。')
+            return
+
+    @guild.command(alias=["rs"])
+    async def roleset():
+        pass
+
 
 def setup(bot):
     bot.add_cog(Database(bot))
