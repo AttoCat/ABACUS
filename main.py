@@ -18,14 +18,6 @@ EXTENSIONS = [
     "cogs.play", "cogs.event", "cogs.special", "cogs.database"]
 
 
-def handler(signum, frame):
-    print("シグナルをスルー")  # test
-    return
-
-
-signal.signal(signal.SIGTERM, handler)
-
-
 class Hiikun(commands.Bot):
     def __init__(self, command_prefix):
         super().__init__(command_prefix)
