@@ -18,7 +18,7 @@ EXTENSIONS = [
     "cogs.play", "cogs.event", "cogs.special", "cogs.database"]
 
 
-class Hiikun(commands.Bot):
+class Abacus(commands.Bot):
     def __init__(self, command_prefix):
         super().__init__(command_prefix)
 
@@ -68,5 +68,5 @@ class Hiikun(commands.Bot):
 
 
 if __name__ == '__main__':
-    bot = Hiikun(command_prefix=PREFIX)
+    bot = Abacus(command_prefix=PREFIX)
     bot.run(TOKEN)
