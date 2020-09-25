@@ -31,8 +31,10 @@ class Abacus(commands.Bot):
 
     async def setup(self):
         try:
-            context = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
-            bot.conn = await asyncpg.connect(DATABASE_URL, ssl=context)
+            ctx = ssl.create_default_context(cafile='')
+            ctx.check_hostname = False
+            ctx.verify_mode = ssl.CERT_NONE
+            bot.conn = await asyncpg.connect(DATABASE_URL, ssl=ctx)
         except Exception:
             raise
 
