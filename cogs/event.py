@@ -62,6 +62,8 @@ class Event(commands.Cog):
             return
         if member.guild != self.guild:
             return
+        if member.bot:
+            return
         ch = self.guild.get_channel(711375652107976847)
         rule = self.guild.get_channel(711379195992997949)
         yaku = self.guild.get_channel(712410294496002090)
