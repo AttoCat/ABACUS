@@ -140,7 +140,7 @@ class Scan(commands.Cog):
         try:
             self.scan.remove(content)
         except ValueError:
-            raise commands.BadArgument
+            raise commands.BadArgument()
         embed = discord.Embed(
             title="Done.",
             description=(
@@ -166,14 +166,10 @@ class Scan(commands.Cog):
         await ctx.message.delete()
 
     @commands.command(aliases=['ks'])
-    @commands.has_role(713321552271376444)
-    async def kaiseki(self, ctx, naiyou):
-        t = Tokenizer(
-            "dictionary.csv", udic_type="simpledic",
-            udic_enc="utf8")
-        moji = naiyou
-        kekka = t.tokenize(moji, wakati=True)
-        await ctx.channel.send(kekka)
+    @commands.is_owner()
+    async def analyze(self, ctx, content):
+        result = list(self.t.tokenize(content, wakati=True))
+        await ctx.channel.send(",".join(result))
 
     @commands.group()
     @commands.is_owner()
@@ -188,7 +184,7 @@ class Scan(commands.Cog):
         if len(content) == 2:
             content.append("名詞")
         elif len(content) >= 4:
-            raise commands.BadArgument
+            raise commands.BadArgument()
         self.df = self.df.append(
             {
                 0: content[0],
