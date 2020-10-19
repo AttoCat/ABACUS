@@ -1,9 +1,11 @@
+import asyncio
 import discord
 from discord.ext import commands
 import textwrap
 import contextlib
 import traceback
 import io
+import subprocess
 
 
 class Special(commands.Cog):
@@ -113,27 +115,12 @@ class Special(commands.Cog):
             color=0x4e37fb)
         await ctx.send(embed=embed)
 
-    @commands.Cog.listener()
-    async def on_command_error(self, ctx, error):
-        if isinstance(error, commands.NotOwner):
-            content = "あなたにこのコマンドを実行する権限がありません！\nYou don't have permission."
-        elif isinstance(error, commands.BadArgument):
-            content = "不正な引数です！\nInvalid argument passed."
-        elif isinstance(error, commands.MissingRequiredArgument):
-            content = "想定しない引数が渡されました！\nInvalid input."
-        elif isinstance(error, commands.CommandInvokeError):
-            if isinstance(error.original, discord.NotFound):
-                content = "メッセージが見つかりませんでした！\nMessage not found."
-            else:
-                f"不明なエラーが発生しました。\nエラー内容：\n{error}"
-        elif isinstance(error, commands.TooManyArguments):
-            content = "引数の数が不正です！\nInvalid input."
-        else:
-            content = f"不明なエラーが発生しました。\nエラー内容:\n{error}"
-        embed = discord.Embed(
-            title="Error", description=content, color=0xff0000)
-        await ctx.message.delete()
-        await ctx.send(embed=embed)
+    @commands.is_owner()
+    @commands.command()
+    async def restart(self, ctx, pull: bool):
+        if pull:
+            await asyncio.create_subprocess_shell("git pull")
+        await asyncio.create_subprocess_shell("sudo systemctl restart abacus")
 
 
 def setup(bot):
