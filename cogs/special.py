@@ -117,10 +117,10 @@ class Special(commands.Cog):
 
     @commands.is_owner()
     @commands.command()
-    async def restart(self, ctx, pull: bool):
+    async def restart(self, ctx, pull: bool = False):
         if pull:
-            await asyncio.create_subprocess_shell("git pull")
-        await asyncio.create_subprocess_shell("sudo systemctl restart abacus")
+            subprocess.run("git pull")
+        subprocess.run("sudo systemctl restart abacus")
 
 
 def setup(bot):
