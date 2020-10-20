@@ -13,7 +13,7 @@ class Play(commands.Cog):
 
     @commands.command()
     async def ping(self, ctx):
-        await ctx.send(f"Pong! latnecy={round(self.bot.latency,0)}")
+        await ctx.send(f"Pong! latnecy={round(self.bot.latency,1)}")
 
     @commands.command(aliases=["mr"])
     @commands.is_owner()
