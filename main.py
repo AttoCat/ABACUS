@@ -56,6 +56,8 @@ class Abacus(commands.Bot):
             content = "想定しない引数が渡されました！\nInvalid input."
         elif isinstance(error, commands.TooManyArguments):
             content = "引数の数が不正です！\nInvalid input."
+        elif isinstance(error, commands.CommandNotFound):
+            content = "存在しないコマンドです。\nThe command is not available."
         elif isinstance(error, discord.HTTPException):
             if error.code == 10008:
                 content = "メッセージが見つかりませんでした。"
