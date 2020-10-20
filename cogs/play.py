@@ -11,6 +11,10 @@ class Play(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    @commands.command()
+    async def ping(self, ctx):
+        await ctx.send(f"Pong! latnecy={round(self.bot.latency,0)}")
+
     @commands.command(aliases=["mr"])
     @commands.is_owner()
     async def member_random(self, ctx):
