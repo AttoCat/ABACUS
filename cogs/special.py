@@ -115,12 +115,11 @@ class Special(commands.Cog):
             color=0x4e37fb)
         await ctx.send(embed=embed)
 
-    @commands.is_owner()
     @commands.command()
     async def restart(self, ctx, pull: bool = False):
         if pull:
-            subprocess.run("git pull")
-        subprocess.run("sudo systemctl restart abacus")
+            subprocess.run("git pull", shell=True)
+        subprocess.run("sudo systemctl restart abacus", shell=True)
 
 
 def setup(bot):
