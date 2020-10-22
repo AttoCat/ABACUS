@@ -63,7 +63,7 @@ class Play(commands.Cog):
             description=(
                 f"{'|'.join(content)}\n"
                 f"{result}\n当選確率 = {1/chance:.4%}\n"
-                f"大当たり率 = {1/chance/7: .4 %}"),
+                f"大当たり率 = {1/chance/7:.4%}"),
             color=0x3aee67)
         await ctx.send(embed=embed)
 
