@@ -42,35 +42,26 @@ class Play(commands.Cog):
     async def slot(self, ctx, chance: int = 343):
         slotlist = [":alien:", ":robot:", ":smiley_cat:", ":desktop:",
                     ":full_moon_with_face:", ":crossed_swords:", ":seven:"]
-        if chance > 10000 or chance == 0:
+        if chance > 10000 or chance <= 0:
             raise commands.BadArgument()
-        tousenlist = list(range(chance))
-        k = random.choice(tousenlist)
-        if k == 0:
+        choice_number = random.randint(0, chance)
+        if choice_number == 0:
             content = [random.choice(slotlist)] * 3
             if content[0] == ":seven:":
-                kekka = "大あたり！"
+                result = "大あたり！"
             else:
-                kekka = "あたり！"
+                result = "あたり！"
         else:
-            while True:
+            result = "はずれ！"
+            while len(set(content)) != 1:
                 content = random.choices(slotlist, k=3)
-                if not len(set(content)) == 1:
-                    kekka = "はずれ！"
-                    break
-        tousen = str(round(1 / chance * 100, 3)) + "%"
-        ooatari = str(round(float(tousen[:-1]) / 7, 3)) + "%"
-        if tousen == "0.0%":
-            tousen = "限りなく低い"
-        if ooatari == "0.0%":
-            ooatari = "限りなく低い"
         embed = discord.Embed(
             title="スロット結果",
             description=(
-                "|".join(content)
-                + f"\n{kekka}\n当選確率 = {tousen}\n大当たり率 = {ooatari}"),
+                f"{'|'.join(content)}\n"
+                f"{result}\n当選確率 = {1/chance:.4%}\n"
+                f"大当たり率 = {1/chance/7: .4 %}"),
             color=0x3aee67)
-        embed.set_footer(text=f"実行者：{ctx.author}")
         await ctx.send(embed=embed)
 
     @commands.command(aliases=["touhyou"])
