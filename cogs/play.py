@@ -53,7 +53,6 @@ class Play(commands.Cog):
                 result = "あたり！"
         else:
             result = "はずれ！"
-            content = None
             while True:
                 content = random.choices(slotlist, k=3)
                 if len(set(content)) != 1:
