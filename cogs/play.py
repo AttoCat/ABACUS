@@ -44,7 +44,7 @@ class Play(commands.Cog):
                     ":full_moon_with_face:", ":crossed_swords:", ":seven:"]
         if chance > 10000 or chance <= 0:
             raise commands.BadArgument()
-        choice_number = random.randint(0, chance)
+        choice_number = random.randrange(0, chance)
         if choice_number == 0:
             content = [random.choice(slotlist)] * 3
             if content[0] == ":seven:":
