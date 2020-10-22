@@ -53,8 +53,11 @@ class Play(commands.Cog):
                 result = "あたり！"
         else:
             result = "はずれ！"
-            while len(set(content)) != 1:
+            content = None
+            while True:
                 content = random.choices(slotlist, k=3)
+                if len(set(content)) != 1:
+                    break
         embed = discord.Embed(
             title="スロット結果",
             description=(
