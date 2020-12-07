@@ -47,9 +47,9 @@ class Event(commands.Cog):
             if not message.attachments:
                 return
             for attachment in message.attachments:
-                if not attachment.url.endswith(self.kakutyousi):
+                if not attachment.filename.endswith(self.kakutyousi):
                     return
-                if "SPOILER_" in attachment.url:
+                if "SPOILER_" in attachment.filename:
                     return print("tessssssssssst")
                 else:
                     print("goooooooooood")
