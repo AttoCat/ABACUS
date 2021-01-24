@@ -110,7 +110,7 @@ class Play(commands.Cog):
             color=0)
         await ctx.send(embed=embed)
 
-    @commands.cog.listener()
+    @commands.Cog.listener()
     async def on_message(self, message):
         if message.content == "/neko":
             await message.channel.send("にゃーん")
