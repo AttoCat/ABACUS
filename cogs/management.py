@@ -1,5 +1,5 @@
 import asyncio
-import typing
+
 import discord
 from discord.ext import commands
 
@@ -195,6 +195,7 @@ class Management(commands.Cog):
             await panel.edit(embed=timeout_embed)
             await asyncio.sleep(5)
             await panel.delete()
+            return
 
         if ok_no.content.lower() == "ok":
             await execute(number)  # ここで実行
