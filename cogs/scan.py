@@ -1,10 +1,10 @@
-from janome.tokenizer import Tokenizer
-from discord.ext import commands
-import discord
 import json
-import csv
-import pandas as pd
+
 import aiofiles
+import discord
+import pandas as pd
+from discord.ext import commands
+from janome.tokenizer import Tokenizer
 
 
 class Scan(commands.Cog):
@@ -48,8 +48,8 @@ class Scan(commands.Cog):
             or message.content.startswith("ab!")
                 or message.channel.is_nsfw()):
             return
-        kekka = self.t.tokenize(message.content, wakati=True)
-        if not any((word in self.scan) for word in kekka):
+        result = self.t.tokenize(message.content, wakati=True)
+        if not any((word in self.scan) for word in result):
             return
         embed = discord.Embed(
             title="Message deleted",

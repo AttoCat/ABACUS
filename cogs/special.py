@@ -1,11 +1,11 @@
-import asyncio
-import discord
-from discord.ext import commands
-import textwrap
 import contextlib
-import traceback
 import io
 import subprocess
+import textwrap
+import traceback
+
+import discord
+from discord.ext import commands
 
 
 class Special(commands.Cog):

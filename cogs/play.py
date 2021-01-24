@@ -1,9 +1,8 @@
 import random
-import psutil
-from decimal import Decimal, ROUND_HALF_UP, ROUND_HALF_EVEN
+
 import discord
+import psutil
 from discord.ext import commands
-import asyncpg
 
 
 class Play(commands.Cog):
@@ -110,6 +109,11 @@ class Play(commands.Cog):
                 f"`|{cpu_meter}|`"),
             color=0)
         await ctx.send(embed=embed)
+
+    @commands.cog.listener()
+    async def on_message(self, message):
+        if message.content == "/neko":
+            await message.channel.send("にゃーん")
 
 
 def setup(bot):
