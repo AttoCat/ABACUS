@@ -20,8 +20,8 @@ EXTENSIONS = [
 
 
 class Abacus(commands.Bot):
-    def __init__(self, command_prefix, **options):
-        super().__init__(command_prefix, **options)
+    def __init__(self, command_prefix, intents):
+        super().__init__(command_prefix, intents)
 
         for cog in EXTENSIONS:
             try:
@@ -73,5 +73,7 @@ class Abacus(commands.Bot):
 
 
 if __name__ == '__main__':
-    bot = Abacus(command_prefix=PREFIX, intents=Intents.all())
+    intents = Intents.all()
+    intents.typing = False
+    bot = Abacus(command_prefix=PREFIX, intents=intents)
     bot.run(TOKEN)
