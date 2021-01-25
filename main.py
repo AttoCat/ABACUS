@@ -20,8 +20,8 @@ EXTENSIONS = [
 
 
 class Abacus(commands.Bot):
-    def __init__(self, command_prefix):
-        super().__init__(command_prefix)
+    def __init__(self, command_prefix, **options):
+        super().__init__(command_prefix, **options)
 
         for cog in EXTENSIONS:
             try:
