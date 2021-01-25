@@ -73,5 +73,5 @@ class Abacus(commands.Bot):
 
 
 if __name__ == '__main__':
-    bot = Abacus(command_prefix=PREFIX, intents=Intents.all())
+    bot = Abacus(command_prefix=PREFIX, intent=Intents.all())
     bot.run(TOKEN)
