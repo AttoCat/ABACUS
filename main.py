@@ -1,14 +1,15 @@
-import asyncio
-import asyncpg
-import discord
-from discord.ext import commands
-import dotenv
 import os
-import signal
 import ssl
 import traceback
 
+import asyncpg
+import discord
+import dotenv
+from discord.ext import commands
+from discord.flags import Intents
+
 dotenv.load_dotenv()
+
 
 TOKEN = os.getenv("TOKEN")
 PREFIX = os.getenv("PREFIX")
@@ -72,5 +73,5 @@ class Abacus(commands.Bot):
 
 
 if __name__ == '__main__':
-    bot = Abacus(command_prefix=PREFIX)
+    bot = Abacus(command_prefix=PREFIX,intents=discord.Intents.all())
     bot.run(TOKEN)
