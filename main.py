@@ -75,5 +75,6 @@ class Abacus(commands.Bot):
 
 
 if __name__ == '__main__':
-    bot = Abacus(command_prefix=when_mentioned_or([PREFIX, "ab.", "a!", "a."]))
+    prefixes = [PREFIX, "ab.", "a!", "a."]
+    bot = Abacus(command_prefix=when_mentioned_or(*prefixes))
     bot.run(TOKEN)
