@@ -6,7 +6,6 @@ import asyncpg
 import discord
 import dotenv
 from discord.ext import commands
-from discord.flags import Intents
 
 dotenv.load_dotenv()
 
@@ -20,8 +19,10 @@ EXTENSIONS = [
 
 
 class Abacus(commands.Bot):
-    def __init__(self, command_prefix, intents):
-        super().__init__(command_prefix, intents)
+    def __init__(self, command_prefix):
+        Intents = discord.Intents.all()
+        Intents.typing = False
+        super().__init__(command_prefix, intents=Intents)
 
         for cog in EXTENSIONS:
             try:
@@ -73,7 +74,5 @@ class Abacus(commands.Bot):
 
 
 if __name__ == '__main__':
-    Intents = Intents.all()
-    Intents.typing = False
-    bot = Abacus(command_prefix=PREFIX, intents=Intents)
+    bot = Abacus(command_prefix=PREFIX)
     bot.run(TOKEN)
