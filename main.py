@@ -6,6 +6,7 @@ import asyncpg
 import discord
 import dotenv
 from discord.ext import commands
+from discord.ext.commands.bot import when_mentioned_or
 
 dotenv.load_dotenv()
 
@@ -74,5 +75,5 @@ class Abacus(commands.Bot):
 
 
 if __name__ == '__main__':
-    bot = Abacus(command_prefix=PREFIX)
+    bot = Abacus(command_prefix=when_mentioned_or[PREFIX, "ab.", "a!", "a."])
     bot.run(TOKEN)
