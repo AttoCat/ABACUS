@@ -73,7 +73,7 @@ class Abacus(commands.Bot):
 
 
 if __name__ == '__main__':
-    intents = Intents.all()
-    intents.typing = False
-    bot = Abacus(command_prefix=PREFIX, intents=intents)
+    Intents = Intents.all()
+    Intents.typing = False
+    bot = Abacus(command_prefix=PREFIX, intents=Intents)
     bot.run(TOKEN)
