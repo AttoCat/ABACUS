@@ -1,3 +1,4 @@
+import asyncio
 import contextlib
 import io
 import subprocess
@@ -9,7 +10,7 @@ from discord.ext import commands
 
 
 class Special(commands.Cog):
-    __slots__ = ('client', 'name', '_last_result')
+    __slots__ = ("client", "name", "_last_result")
 
     def __init__(self, client, name=None):
         self.client = client
@@ -31,38 +32,38 @@ class Special(commands.Cog):
     def cleanup_code(self, content):
         """Automatically removes code blocks from the code."""
         # remove ```py\n```
-        if content.startswith('```') and content.endswith('```'):
-            return '\n'.join(content.split('\n')[1:-1])
+        if content.startswith("```") and content.endswith("```"):
+            return "\n".join(content.split("\n")[1:-1])
 
         # remove `foo`
-        return content.strip('` \n')
+        return content.strip("` \n")
 
     def get_syntax_error(self, e):
         if e.text is None:
-            return f'```py\n{e.__class__.__name__}: {e}\n```'
-        return f'```py\n{e.text}'
+            return f"```py\n{e.__class__.__name__}: {e}\n```"
+        return f"```py\n{e.text}"
         f'{"^":>{e.offset}}\n'
-        f'{e.__class__.__name__}: {e}```'
+        f"{e.__class__.__name__}: {e}```"
 
-    @commands.command(pass_context=True, hidden=True, name='eval')  # 以下コピペ
+    @commands.command(pass_context=True, hidden=True, name="eval")  # 以下コピペ
     async def _eval(self, ctx):
         """Evaluates a code"""
 
         env = {
-            'bot': self.client,
-            'ctx': ctx,
-            'channel': ctx.channel,
-            'author': ctx.author,
-            'guild': ctx.guild,
-            'message': ctx.message,
-            '_': self._last_result
+            "bot": self.client,
+            "ctx": ctx,
+            "channel": ctx.channel,
+            "author": ctx.author,
+            "guild": ctx.guild,
+            "message": ctx.message,
+            "_": self._last_result,
         }
 
         env.update(globals())
-        await ctx.send('コマンドを入力してください')
+        await ctx.send("コマンドを入力してください")
         message = await self.client.wait_for(
-            'message', check=lambda m: m.author == ctx.author
-            and m.channel == ctx.channel)
+            "message", check=lambda m: m.author == ctx.author and m.channel == ctx.channel
+        )
         body = self.cleanup_code(message.content)
         stdout = io.StringIO()
 
@@ -71,28 +72,28 @@ class Special(commands.Cog):
         try:
             exec(to_compile, env)
         except Exception as e:
-            return await ctx.send(f'```py\n{e.__class__.__name__}: {e}\n```')
+            return await ctx.send(f"```py\n{e.__class__.__name__}: {e}\n```")
 
-        func = env['func']
+        func = env["func"]
         try:
             with contextlib.redirect_stdout(stdout):
                 ret = await func()
         except Exception:
             value = stdout.getvalue()
-            await ctx.send(f'```py\n{value}{traceback.format_exc()}\n```')
+            await ctx.send(f"```py\n{value}{traceback.format_exc()}\n```")
         else:
             value = stdout.getvalue()
             try:
-                await ctx.message.add_reaction('\u2705')
+                await ctx.message.add_reaction("\u2705")
             except Exception:
                 pass
 
             if ret is None:
                 if value:
-                    await ctx.send(f'```py\n{value}\n```')
+                    await ctx.send(f"```py\n{value}\n```")
             else:
                 self._last_result = ret
-                await ctx.send(f'```py\n{value}{ret}\n```')
+                await ctx.send(f"```py\n{value}{ret}\n```")
 
     @commands.command()
     async def donate(self, ctx):
@@ -111,8 +112,10 @@ class Special(commands.Cog):
                 f" [欲しいものリスト]({url})\n"
                 "↑にはAttoCatが欲しいものが全て入っています！\n"
                 "2.AmazonギフトカードまたはKyashから寄付\n"
-                "AttoCat宛にDMでコード（Kyashの場合はリンク）を送ってください！"),
-            color=0x4e37fb)
+                "AttoCat宛にDMでコード（Kyashの場合はリンク）を送ってください！"
+            ),
+            color=0x4E37FB,
+        )
         await ctx.send(embed=embed)
 
     @commands.command()
