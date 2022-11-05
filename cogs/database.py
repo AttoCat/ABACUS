@@ -1,17 +1,13 @@
-import discord
-from discord.ext import commands, tasks
-import asyncpg
-import dotenv
 import os
-import ssl
-import asyncio
+
+import dotenv
+from discord.ext import commands
 
 dotenv.load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 
 class Database(commands.Cog):
-
     def __init__(self, bot):
         self.bot = bot
 
@@ -21,7 +17,8 @@ class Database(commands.Cog):
             SELECT *
                 FROM users
                 WHERE id = $1;
-            """, id
+            """,
+            id,
         )
         return user
 
@@ -34,7 +31,7 @@ class Database(commands.Cog):
             """
                 INSERT INTO users VALUES ($1,DEFAULT);
                 """,
-            ctx.author.id
+            ctx.author.id,
         )
         await ctx.send("データベースに登録しました！")
 
@@ -54,7 +51,9 @@ class Database(commands.Cog):
                 SET tag=$1
             WHERE id = $2;
             """,
-            text, ctx.author.id)
+            text,
+            ctx.author.id,
+        )
         await ctx.send(f"タグを{content}しました！")
 
     @commands.command()
@@ -68,7 +67,7 @@ class Database(commands.Cog):
     @commands.group(alias=["server", "g", "s"])
     async def guild(self, ctx):
         if ctx.invoked_subcommand is None:
-            await ctx.send('このコマンドにはサブコマンドが必要です。')
+            await ctx.send("このコマンドにはサブコマンドが必要です。")
             return
 
     @guild.command(alias=["rs"])
